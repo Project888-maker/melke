@@ -9,6 +9,8 @@ export type VoiceError = "mic" | "unavailable" | null;
 export type Transcript = { id: string; from: "draft" | "me"; text: string; final: boolean };
 
 const MAX_CALL_MS = 10 * 60_000;
+/** Draft greets within a few seconds; a cold start can take up to about 13. Longer than this means the voice service is down. */
+const GREETING_MS = 22_000;
 
 /**
  * Live voice call with Draft over LiveKit. The agent hears the visitor,
@@ -25,6 +27,8 @@ export function useVoice({
   const room = useRef<Room | null>(null);
   const audio = useRef<HTMLAudioElement[]>([]);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const greet = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const heard = useRef(false);
   const raf = useRef(0);
   const cb = useRef({ onAction, onTranscript });
   cb.current = { onAction, onTranscript };
@@ -37,6 +41,7 @@ export function useVoice({
 
   const stop = useCallback(async () => {
     if (timer.current) clearTimeout(timer.current);
+    if (greet.current) clearTimeout(greet.current);
     cancelAnimationFrame(raf.current);
     audio.current.forEach((el) => el.remove());
     audio.current = [];
@@ -48,8 +53,16 @@ export function useVoice({
     if (r) await r.disconnect().catch(() => {});
   }, []);
 
+  /** The call broke on the service side: end it and say so, instead of leaving the visitor in silence. */
+  const fail = useCallback(async () => {
+    await stop();
+    setError("unavailable");
+    setState("error");
+  }, [stop]);
+
   const start = useCallback(async () => {
     if (room.current) return;
+    heard.current = false;
     setError(null);
     setState("connecting");
     try {
@@ -76,6 +89,7 @@ export function useVoice({
         const attrs = reader.info.attributes ?? {};
         const mine = who.identity === r.localParticipant.identity;
         const id = `${mine ? "me" : "draft"}-${attrs["lk.segment_id"] ?? reader.info.id}`;
+        if (!mine) heard.current = true;
         let text = "";
         try {
           for await (const chunk of reader) {
@@ -96,9 +110,12 @@ export function useVoice({
       });
       r.on(RoomEvent.ParticipantAttributesChanged, (changed) => {
         const s = changed["lk.agent.state"];
+        if (s === "speaking") heard.current = true;
         if (s === "listening" || s === "thinking" || s === "speaking") setState(s);
       });
-      r.on(RoomEvent.Disconnected, () => { if (room.current === r) void stop(); });
+      // Draft leaving or the room dropping while the call is on means the voice service failed.
+      r.on(RoomEvent.ParticipantDisconnected, (p) => { if (room.current === r && p.isAgent) void fail(); });
+      r.on(RoomEvent.Disconnected, () => { if (room.current === r) void fail(); });
 
       await r.connect(url, token);
       try {
@@ -122,13 +139,14 @@ export function useVoice({
 
       setState((s) => (s === "connecting" ? "listening" : s));
       timer.current = setTimeout(() => void stop(), MAX_CALL_MS);
+      greet.current = setTimeout(() => { if (room.current === r && !heard.current) void fail(); }, GREETING_MS);
     } catch (e) {
       const mic = e instanceof Error && e.message === "mic";
       await stop();
       setError(mic ? "mic" : "unavailable");
       setState("error");
     }
-  }, [lang, stop]);
+  }, [lang, stop, fail]);
 
   const toggleMute = useCallback(async () => {
     const r = room.current;
