@@ -12,7 +12,7 @@ export function VideoCard({ poster, src, label, caption }: { poster: string; src
     <figure>
       <div className="relative aspect-video overflow-hidden rounded-3xl bg-navy shadow-card">
         {playing && !failed ? (
-          <video ref={ref} src={src} controls autoPlay playsInline poster={poster} onError={() => setFailed(true)} className="size-full object-cover" />
+          <video ref={ref} src={src} controls autoPlay playsInline poster={poster} onError={() => setFailed(true)} className="size-full bg-black object-contain" />
         ) : (
           <button type="button" onClick={() => { setFailed(false); setPlaying(true); }} aria-label={label} className="group absolute inset-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}

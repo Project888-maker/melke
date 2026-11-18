@@ -2,12 +2,13 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { load, alternates } from "@/lib/page";
 import { href } from "@/lib/href";
-import { Reveal, Stagger, StaggerItem, Parallax } from "@/components/Reveal";
+import { Reveal, Stagger, StaggerItem } from "@/components/Reveal";
 import { RequestButton, DraftButton } from "@/components/RequestProvider";
 import { ButtonLink, btn, BtnInner } from "@/components/Button";
 import { CtaBand, DraftBand, LinkCard, Partners, SectionTitle, Steps } from "@/components/Sections";
 import { CaseCard } from "@/components/Projects";
 import { Icon } from "@/components/Icon";
+import { HeroScene } from "@/components/HeroScene";
 
 export const metadata: Metadata = { alternates: alternates() };
 
@@ -20,11 +21,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   return (
     <>
       <section className="night relative isolate overflow-hidden text-white">
-        <Parallax className="absolute inset-y-0 right-0 -z-10 w-full lg:w-[58%]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={p.hero.img} alt="" className="mask-fade-l size-full object-cover object-[60%_center] opacity-40 lg:opacity-100" />
-        </Parallax>
-        <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-r from-[#0a1722] via-[#0a1722]/75 to-transparent" />
+        <HeroScene image={p.hero.img} figure={p.hero.figure} />
         <div className="container-x pb-28 pt-14 sm:pb-36 sm:pt-20 lg:pt-24">
           <Reveal y={12}>
             <span className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-sm backdrop-blur">
@@ -32,7 +29,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               {p.hero.kicker}
             </span>
           </Reveal>
-          <h1 className="h-display mt-7 text-[46px] sm:text-7xl lg:text-[84px]">
+          <h1 className="h-display mt-7 text-[46px] sm:text-7xl lg:text-[76px] xl:text-[80px]">
             {p.hero.title.map((line, i) => (
               <Reveal key={line} delay={0.08 + i * 0.1} y={36}>
                 <span className={i > 0 ? "bg-linear-to-r from-[#19d9f7] to-[#9defff] bg-clip-text text-transparent" : ""}>{line}</span>
@@ -66,10 +63,10 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
           {c.systems.map((s) => (
             <StaggerItem key={s.slug}>
               <Link href={href(lang, `okna/${s.slug}`)} className="group flex h-full flex-col rounded-3xl border border-line bg-white p-3 transition-[transform,box-shadow,border-color] duration-500 ease-out-soft hover:-translate-y-2 hover:border-cyan/50 hover:shadow-lift">
-                <span className="relative block aspect-[4/3] overflow-hidden rounded-2xl bg-linear-to-b from-[#eef4f8] to-white">
+                <span className="relative block aspect-[5/4] overflow-hidden rounded-2xl bg-[#eef3f7]">
                   <span className={`absolute left-3 top-3 z-10 rounded-full px-3.5 py-1.5 text-[13px] font-medium ${tone[s.badge.tone]}`}>{s.badge.text}</span>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={s.img} alt={s.name} loading="lazy" className="absolute inset-0 size-full object-contain object-bottom transition-transform duration-700 ease-out-soft group-hover:scale-[1.07]" />
+                  <img src={s.img} alt={s.name} loading="lazy" className="absolute inset-0 size-full object-cover object-[50%_42%] transition-transform duration-700 ease-out-soft group-hover:scale-[1.07]" />
                 </span>
                 <span className="flex flex-1 flex-col px-3 pb-3 pt-5">
                   <span className="text-[26px] font-bold leading-none tracking-tight">{s.name}</span>

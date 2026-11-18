@@ -37,12 +37,12 @@ export function NightHero({
   return (
     <section className="night relative isolate overflow-hidden text-white">
       {image && (
-        <Parallax className="absolute inset-y-0 right-0 -z-10 w-full sm:w-[62%]">
+        <Parallax className="absolute inset-y-0 right-0 -z-10 w-full lg:w-[82%]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image} alt="" className="mask-fade-l size-full object-cover object-center opacity-45 sm:opacity-100" />
+          <img src={image} alt="" fetchPriority="high" className="mask-fade-l size-full object-cover object-[78%_14%] opacity-45 sm:opacity-70 lg:opacity-100" />
         </Parallax>
       )}
-      <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-r from-[#0a1722] via-[#0a1722]/80 to-transparent sm:via-[#0a1722]/55" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-r from-[#0a1722] via-[#0a1722]/80 to-transparent lg:via-[#0a1722]/40" />
       <div className={cx("container-x", tall ? "pb-16 pt-8 sm:pb-24 sm:pt-10" : "pb-12 pt-8 sm:pb-16 sm:pt-9")}>
         <Reveal y={10}><Breadcrumbs lang={lang} items={crumbs} dark /></Reveal>
         <div className={cx("max-w-2xl", tall ? "mt-10 sm:mt-16" : "mt-8 sm:mt-10")}>
@@ -85,9 +85,9 @@ export function CtaBand({ title, text, image, children }: { title: string; text?
   return (
     <section className="cyan-band relative overflow-hidden">
       <div className="container-x relative grid items-center gap-6 py-10 sm:grid-cols-[220px_1fr_auto] sm:py-12 lg:grid-cols-[300px_1fr_auto]">
-        <div aria-hidden className="pointer-events-none absolute -bottom-2 left-0 hidden h-[118%] w-[240px] sm:block lg:w-[320px]">
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 hidden w-[230px] pt-2 sm:block lg:w-[300px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image} alt="" className="mask-fade-r size-full animate-float object-contain object-bottom mix-blend-multiply" />
+          <img src={image} alt="" loading="lazy" className="mascot size-full object-cover object-top" />
         </div>
         <span className="hidden sm:block" />
         <Reveal>
@@ -125,9 +125,9 @@ export function DraftBand({ data }: { data: Content["pages"]["draft"] }) {
   return (
     <section className="cyan-band relative overflow-hidden">
       <div className="container-x relative grid gap-6 py-10 sm:grid-cols-[230px_1fr] sm:py-12 lg:grid-cols-[320px_1fr]">
-        <div aria-hidden className="pointer-events-none absolute -bottom-2 left-0 hidden h-[112%] w-[250px] sm:block lg:w-[330px]">
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 hidden w-[240px] pt-2 sm:block lg:w-[320px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={data.img} alt="" className="mask-fade-r size-full animate-float object-contain object-bottom mix-blend-multiply" />
+          <img src={data.img} alt="" loading="lazy" className="mascot size-full object-cover object-top" />
         </div>
         <span className="hidden sm:block" />
         <div>

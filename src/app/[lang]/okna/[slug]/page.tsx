@@ -53,9 +53,11 @@ export default async function SystemPage({ params }: P) {
             </Reveal>
           </div>
           <Parallax className="relative mx-auto aspect-square w-full max-w-[560px]">
-            <span aria-hidden className="absolute inset-[12%] rounded-full bg-linear-to-br from-cyan/35 to-transparent blur-2xl" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={s.heroImg} alt={s.name} className="relative size-full animate-float object-contain drop-shadow-[0_40px_50px_rgb(13_27_39/0.18)]" />
+            <span aria-hidden className="absolute -inset-[6%] rounded-full bg-linear-to-br from-cyan/40 to-transparent blur-3xl" />
+            <span className="relative block size-full overflow-hidden rounded-[36px] shadow-lift ring-1 ring-ink/5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={s.heroImg} alt={s.name} fetchPriority="high" className="size-full object-cover transition-transform duration-[1400ms] ease-out-soft hover:scale-[1.04]" />
+            </span>
           </Parallax>
         </div>
         <div className="pb-12"><StatStrip items={s.stats} title={w.product.specs} /></div>
@@ -66,7 +68,7 @@ export default async function SystemPage({ params }: P) {
         <div className="mt-10 grid gap-5 lg:grid-cols-[minmax(0,460px)_1fr]">
           <Reveal className="relative overflow-hidden rounded-3xl border border-line bg-linear-to-b from-[#eef4f8] to-white">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={s.img} alt={s.name} loading="lazy" className="aspect-square w-full object-contain transition-transform duration-700 ease-out-soft hover:scale-105" />
+            <img src={s.img} alt={s.name} loading="lazy" className="aspect-square w-full object-cover transition-transform duration-700 ease-out-soft hover:scale-105" />
           </Reveal>
           <Stagger className="grid gap-4">
             {s.features.map((f) => (
@@ -123,7 +125,7 @@ export default async function SystemPage({ params }: P) {
             <StaggerItem key={o.slug}>
               <Link href={href(lang, `okna/${o.slug}`)} className="group flex items-center gap-6 rounded-3xl border border-line bg-white p-4 transition-[transform,box-shadow,border-color] duration-500 ease-out-soft hover:-translate-y-1.5 hover:border-cyan/50 hover:shadow-lift">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={o.img} alt="" loading="lazy" className="aspect-square w-32 shrink-0 rounded-2xl bg-mist object-contain transition-transform duration-700 group-hover:scale-105 sm:w-40" />
+                <img src={o.img} alt="" loading="lazy" className="aspect-square w-32 shrink-0 rounded-2xl bg-mist object-cover transition-transform duration-700 group-hover:scale-105 sm:w-40" />
                 <span className="flex-1">
                   <span className={`inline-block rounded-full px-3 py-1 text-[13px] font-medium ${tone[o.badge.tone]}`}>{o.badge.text}</span>
                   <span className="mt-2 block text-2xl font-bold tracking-tight">{o.name}</span>

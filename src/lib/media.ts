@@ -1,8 +1,8 @@
 /**
- * Media from the old site. Until the files are copied into /public/old,
- * they are loaded from the old domain. Change OLD_BASE in one place to switch.
+ * Media carried over from the old site lives in /public/old under the same
+ * relative paths it had there. Gallery photos use the full-size originals.
  */
-export const OLD_BASE = process.env.NEXT_PUBLIC_OLD_MEDIA_BASE ?? "https://eurotexno.ru";
+export const OLD_BASE = process.env.NEXT_PUBLIC_OLD_MEDIA_BASE ?? "/old";
 export const old = (path: string) => `${OLD_BASE}${path}`;
 export const img = (name: string) => `/img/${name}.webp`;
 export const workTeaser = (year: number, teaser: string) =>

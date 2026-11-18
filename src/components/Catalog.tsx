@@ -68,10 +68,10 @@ export function Catalog({ lang, ui, systems, categories, rows, t }: Props) {
                   transition={{ duration: 0.6, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
                   className={cx("group relative flex flex-col rounded-3xl border bg-white p-3 transition-[box-shadow,border-color] duration-500 hover:shadow-lift", inCompare ? "border-cyan shadow-lift" : "border-line")}
                 >
-                  <Link href={href(lang, `okna/${s.slug}`)} className="relative block aspect-[4/3] overflow-hidden rounded-2xl bg-linear-to-b from-[#eef4f8] to-white" aria-label={s.name}>
+                  <Link href={href(lang, `okna/${s.slug}`)} className="relative block aspect-[5/4] overflow-hidden rounded-2xl bg-[#eef3f7]" aria-label={s.name}>
                     <span className={cx("absolute left-3 top-3 z-10 rounded-full px-3.5 py-1.5 text-[13px] font-medium", tone[s.badge.tone])}>{s.badge.text}</span>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={s.img} alt={s.name} loading="lazy" className="absolute inset-0 size-full object-contain object-bottom transition-transform duration-700 ease-out-soft group-hover:scale-[1.07]" />
+                    <img src={s.img} alt={s.name} loading="lazy" className="absolute inset-0 size-full object-cover object-[50%_42%] transition-transform duration-700 ease-out-soft group-hover:scale-[1.07]" />
                   </Link>
                   <div className="flex flex-1 flex-col px-3 pb-3 pt-5">
                     <h3 className="text-[26px] font-bold leading-none tracking-tight">{t.cardTitle}</h3>
