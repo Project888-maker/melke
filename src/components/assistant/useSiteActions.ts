@@ -1,8 +1,9 @@
 "use client";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/lib/i18n";
-import type { AssistantAction } from "@/lib/assistant/brain";
+import type { AssistantAction, FormArgs } from "@/lib/assistant/brain";
+import { currentForm } from "@/lib/assistant/formBridge";
 import { href } from "@/lib/href";
 import { useRequest } from "../RequestProvider";
 
@@ -35,7 +36,8 @@ function spotlight(el: HTMLElement) {
  */
 export function useSiteActions(lang: Locale) {
   const router = useRouter();
-  const { open, systems } = useRequest();
+  const { open, close, systems } = useRequest();
+  const shown = useRef<string | null>(null);
 
   return useCallback(
     async (a: AssistantAction): Promise<string> => {
@@ -80,12 +82,39 @@ export function useSiteActions(lang: Locale) {
         open({ kind, system: inField ? system : undefined, topic });
         return "The form is open.";
       }
+      if (a.name === "fill_request_form" || a.name === "submit_request_form") {
+        const args = a.args as FormArgs;
+        const kind = (["measure", "calc", "consult", "office"] as const).includes(args.kind) ? args.kind : "consult";
+        // Use the form that is already on screen; otherwise open the modal one and wait for it.
+        let form = currentForm();
+        if (!form?.modal || shown.current !== kind) {
+          if (!form?.modal) { open({ kind, topic: args.system }); shown.current = kind; }
+          form = await until(() => { const f = currentForm(); return f?.modal ? f : null; }, 2500);
+          if (!form) return "The form did not open. Ask the visitor to press the request button on the page.";
+          await wait(350);
+        }
+        const st = form.fill({ name: args.name, phone: args.phone, comment: args.comment, system: args.system, count: args.count });
+        const said = `name "${st.name}"${st.nameValid ? "" : " (missing or too short)"}, phone "${st.phone}"${st.phoneValid ? "" : " (incomplete: 11 digits needed)"}`;
+        if (a.name === "fill_request_form") {
+          return `The form is on the visitor's screen, filled in: ${said}. ${st.nameValid && st.phoneValid ? "Repeat the name and phone back and ask if they are correct; send only after a yes." : "Ask for what is missing."}`;
+        }
+        await wait(600);
+        const res = await form.submit();
+        if (res.ok) {
+          shown.current = null;
+          setTimeout(close, 4500);
+          return "Sent. The visitor sees the confirmation. A manager will call back during working hours (Mon–Fri 9:00–17:00).";
+        }
+        if (res.reason === "send") return "The request could not be sent because of a technical error. Apologise and suggest calling the office.";
+        if (res.reason === "consent") return "Not sent: the visitor unticked the consent box. Ask them to tick it.";
+        return `Not sent: ${said}. Ask the visitor again for the ${res.reason === "name" ? "name" : "phone number"}.`;
+      }
       if (a.name === "handoff_to_manager") {
         open({ kind: "consult", topic: a.args.summary });
         return "The consultation form is open.";
       }
       return "Unknown action.";
     },
-    [lang, open, router, systems],
+    [lang, open, close, router, systems],
   );
 }

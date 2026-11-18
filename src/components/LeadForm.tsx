@@ -1,5 +1,5 @@
 "use client";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { usePathname } from "next/navigation";
@@ -7,6 +7,7 @@ import type { Locale, UI } from "@/lib/i18n";
 import { btn, BtnInner } from "./Button";
 import { Icon } from "./Icon";
 import { cx, href } from "@/lib/href";
+import { registerForm, type FormFill, type FormState, type SubmitResult } from "@/lib/assistant/formBridge";
 
 export type LeadKind = "calc" | "measure" | "consult" | "office";
 export type LeadPreset = { kind: LeadKind; topic?: string; system?: string; object?: string };
@@ -30,9 +31,9 @@ function formatPhone(raw: string) {
 }
 
 export function LeadForm({
-  ui, lang, preset, systems, objects, onDone, compact = false,
+  ui, lang, preset, systems, objects, onDone, compact = false, modal = false,
 }: {
-  ui: UI; lang: Locale; preset: LeadPreset; systems: string[]; objects: string[]; onDone?: () => void; compact?: boolean;
+  ui: UI; lang: Locale; preset: LeadPreset; systems: string[]; objects: string[]; onDone?: () => void; compact?: boolean; modal?: boolean;
 }) {
   const f = ui.form;
   const pathname = usePathname();
@@ -41,29 +42,72 @@ export function LeadForm({
   const [phone, setPhone] = useState("");
   const showDetails = preset.kind === "calc";
 
-  async function submit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>;
+  const form = useRef<HTMLFormElement>(null);
+  const phoneNow = useRef("");
+  useEffect(() => { phoneNow.current = phone; }, [phone]);
+
+  /** Validates and sends whatever is in the form right now. */
+  async function send(el: HTMLFormElement): Promise<SubmitResult> {
+    const data = Object.fromEntries(new FormData(el)) as Record<string, string>;
+    const tel = phoneNow.current;
     const errs: Record<string, string> = {};
     if ((data.name ?? "").trim().length < 2) errs.name = f.errName;
-    const digits = phone.replace(/\D/g, "");
-    if (digits.length < 11) errs.phone = f.errPhone;
+    if (tel.replace(/\D/g, "").length < 11) errs.phone = f.errPhone;
     if (!data.consent) errs.consent = f.errConsent;
     setErrors(errs);
-    if (Object.keys(errs).length) return;
+    if (errs.name) return { ok: false, reason: "name" };
+    if (errs.phone) return { ok: false, reason: "phone" };
+    if (errs.consent) return { ok: false, reason: "consent" };
     setStatus("sending");
     try {
       const r = await fetch("/api/lead", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...data, phone, consent: true, kind: preset.kind, topic: preset.topic, page: pathname, lang }),
+        body: JSON.stringify({ ...data, phone: tel, consent: true, kind: preset.kind, topic: preset.topic, page: pathname, lang }),
       });
       const j = await r.json().catch(() => ({}));
-      setStatus(r.ok && j.ok ? "ok" : "error");
+      const ok = r.ok && j.ok;
+      setStatus(ok ? "ok" : "error");
+      return ok ? { ok: true } : { ok: false, reason: "send" };
     } catch {
       setStatus("error");
+      return { ok: false, reason: "send" };
     }
   }
+
+  const submit = (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); void send(e.currentTarget); };
+
+  // Lets Draft fill in and send this form for the visitor (see formBridge).
+  useEffect(() => {
+    const state = (): FormState => {
+      const name = (form.current?.elements.namedItem("name") as HTMLInputElement | null)?.value ?? "";
+      const tel = phoneNow.current;
+      return { name, phone: tel, nameValid: name.trim().length >= 2, phoneValid: tel.replace(/\D/g, "").length >= 11 };
+    };
+    const set = (field: string, value: string) => {
+      const el = form.current?.elements.namedItem(field) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+      if (el) el.value = value;
+    };
+    return registerForm({
+      modal,
+      state,
+      fill(v: FormFill) {
+        if (v.name !== undefined) set("name", v.name.trim().slice(0, 80));
+        if (v.phone !== undefined) { const p = formatPhone(v.phone); phoneNow.current = p; setPhone(p); }
+        if (v.comment !== undefined) set("message", v.comment.trim().slice(0, 1000));
+        if (v.count !== undefined && Number.isFinite(v.count)) set("count", String(Math.max(1, Math.min(500, Math.round(v.count)))));
+        if (v.system) {
+          const wanted = v.system.trim().toLowerCase();
+          const hit = systems.find((x) => x.toLowerCase() === wanted || x.toLowerCase().endsWith(wanted));
+          if (hit) set("system", hit);
+        }
+        setErrors({});
+        return state();
+      },
+      submit: async () => (form.current ? send(form.current) : { ok: false, reason: "send" }),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modal, systems]);
 
   return (
     <AnimatePresence mode="wait" initial={false}>
@@ -92,7 +136,7 @@ export function LeadForm({
           )}
         </motion.div>
       ) : (
-        <motion.form key="form" onSubmit={submit} noValidate exit={{ opacity: 0, y: -12 }} className="grid gap-3.5">
+        <motion.form key="form" ref={form} onSubmit={submit} noValidate exit={{ opacity: 0, y: -12 }} className="grid gap-3.5">
           <div className={cx("grid gap-3.5", !compact && "sm:grid-cols-2")}>
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium">{f.name}</span>

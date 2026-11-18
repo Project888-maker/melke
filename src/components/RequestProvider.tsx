@@ -7,7 +7,7 @@ import { btn, BtnInner, type Size, type Variant } from "./Button";
 import { Icon } from "./Icon";
 import { cx } from "@/lib/href";
 
-type Ctx = { open: (preset: LeadPreset) => void; ui: UI; lang: Locale; systems: string[]; objects: string[] };
+type Ctx = { open: (preset: LeadPreset) => void; close: () => void; active: boolean; ui: UI; lang: Locale; systems: string[]; objects: string[] };
 const RequestContext = createContext<Ctx | null>(null);
 
 export const useRequest = () => {
@@ -22,7 +22,8 @@ export function RequestProvider({
   const [preset, setPreset] = useState<LeadPreset | null>(null);
   const open = useCallback((p: LeadPreset) => setPreset(p), []);
   const close = useCallback(() => setPreset(null), []);
-  const value = useMemo(() => ({ open, ui, lang, systems, objects }), [open, ui, lang, systems, objects]);
+  const active = preset !== null;
+  const value = useMemo(() => ({ open, close, active, ui, lang, systems, objects }), [open, close, active, ui, lang, systems, objects]);
 
   useEffect(() => {
     if (!preset) return;
@@ -43,7 +44,7 @@ export function RequestProvider({
         {preset && (
           <motion.div
             data-request-modal
-            className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6"
+            className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center sm:p-6 lg:[[data-draft-open=panel]_&]:pr-[448px]"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           >
             <button type="button" aria-label={ui.form.close} onClick={close} className="absolute inset-0 cursor-default bg-navy/70 backdrop-blur-md" />
@@ -53,7 +54,7 @@ export function RequestProvider({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 32, scale: 0.98 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="relative max-h-[94dvh] w-full max-w-[640px] overflow-y-auto rounded-t-3xl bg-white p-6 shadow-2xl sm:rounded-3xl sm:p-9"
+              className="relative max-h-[94dvh] w-full max-w-[640px] overflow-y-auto rounded-t-3xl bg-white p-6 shadow-2xl max-sm:[[data-draft-open=mini]_&]:max-h-[calc(100dvh-104px)] sm:rounded-3xl sm:p-9"
             >
               <span aria-hidden className="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-[#0fd6f5] via-[#7eeafc] to-[#0fd6f5]" />
               <button type="button" onClick={close} aria-label={ui.form.close} className="absolute right-4 top-5 grid size-10 place-items-center rounded-full text-muted transition hover:bg-mist hover:text-ink">
@@ -68,7 +69,7 @@ export function RequestProvider({
                 </p>
               )}
               <div className="mt-6">
-                <LeadForm ui={ui} lang={lang} preset={preset} systems={systems} objects={objects} onDone={close} />
+                <LeadForm ui={ui} lang={lang} preset={preset} systems={systems} objects={objects} onDone={close} modal />
               </div>
             </motion.div>
           </motion.div>

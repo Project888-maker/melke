@@ -1,4 +1,4 @@
-import { instructions, toolDefs, siteMap, type AssistantAction } from "@/lib/assistant/brain";
+import { instructions, toolDefs, siteMap, checkContact, ACTION_NAMES, type AssistantAction } from "@/lib/assistant/brain";
 import { fallbackAnswer } from "@/lib/assistant/fallback";
 import { isLocale, type Locale } from "@/lib/i18n";
 
@@ -32,7 +32,19 @@ function toolResult(lang: Locale, a: AssistantAction): string {
     return page ? `Opened "${page.title}"${a.args.section ? `, section ${a.args.section}` : ""}. The visitor sees it now.` : "No such page. Use a path from the site map.";
   }
   if (a.name === "scroll_page") return "Scrolled.";
-  if (a.name === "open_request_form") return "The request form is open on the visitor's screen. They fill in name and phone themselves.";
+  if (a.name === "open_request_form") return "The request form is open on the visitor's screen. They can type their details, or you can fill it in for them with fill_request_form.";
+  if (a.name === "fill_request_form" || a.name === "submit_request_form") {
+    const { nameValid, phoneValid } = checkContact(a.args);
+    const missing = [!nameValid && "the name", !phoneValid && "a complete phone number (11 digits)"].filter(Boolean).join(" and ");
+    if (a.name === "fill_request_form") {
+      return missing
+        ? `The form is on the visitor's screen with what you have so far. Still needed: ${missing}.`
+        : "The form is on the visitor's screen, filled in. Repeat the name and phone back and ask if they are correct; send only after a yes.";
+    }
+    return missing
+      ? `Not sent. Still needed: ${missing}. Ask the visitor.`
+      : "Sent. The visitor sees the confirmation on screen. A manager will call back during working hours (Mon–Fri 9:00–17:00).";
+  }
   return "The consultation form is open with your summary. A manager will call back during working hours (Mon–Fri 9:00–17:00).";
 }
 
@@ -135,8 +147,10 @@ export async function POST(request: Request) {
             const action = { name: call.function.name, args } as AssistantAction;
             if (action.name === "show_page" && typeof args.path === "string") args.path = args.path.replace(/^\/+|\/+$/g, "").replace(/^(ru|en|de)(\/|$)/, "");
             const label = action.name === "show_page" ? siteMap(lang).find((p) => p.path === action.args.path)?.title : undefined;
-            const known = ["show_page", "scroll_page", "open_request_form", "handoff_to_manager"].includes(action.name) && (action.name !== "show_page" || label !== undefined);
-            if (known) send({ t: "action", name: action.name, args, label });
+            const incomplete = action.name === "submit_request_form" && !(checkContact(action.args).nameValid && checkContact(action.args).phoneValid);
+            const known = (ACTION_NAMES as readonly string[]).includes(action.name) && (action.name !== "show_page" || label !== undefined);
+            // An incomplete request is shown filled in, never sent.
+            if (known) send({ t: "action", name: incomplete ? "fill_request_form" : action.name, args, label });
             messages.push({ role: "tool", tool_call_id: call.id, content: known ? toolResult(lang, action) : action.name === "show_page" ? "No such page. Use a path from the site map." : "Unknown tool." });
           }
           if (content) send({ t: "delta", v: "\n" });

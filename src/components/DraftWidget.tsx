@@ -48,7 +48,7 @@ function Orb({ level, state, size = 56 }: { level: number; state: string; size?:
 export function DraftWidget({ lang, ui, quiz, avatar, greeting }: { lang: Locale; ui: UI; quiz: Quiz; avatar: string; greeting: string }) {
   const d = ui.draft;
   const pathname = usePathname();
-  const { open: openRequest } = useRequest();
+  const { open: openRequest, active: formOpen } = useRequest();
   const runAction = useSiteActions(lang);
   const [open, setOpen] = useState(false);
   const [mini, setMini] = useState(false);
@@ -74,7 +74,8 @@ export function DraftWidget({ lang, ui, quiz, avatar, greeting }: { lang: Locale
           patch(msgId, (m) => ({ ...m, links: [...(m.links ?? []).filter((l) => l.path !== path), { label, path, note: d.opened }] }));
         }
       } else {
-        if (isPhone()) setMini(true);
+        // Forms: the chat sits beside the form on wide screens and folds into the bar on narrow ones.
+        if (isPhone() || window.innerWidth < 1024) setMini(true);
         if (msgId) patch(msgId, (m) => ({ ...m, actions: true }));
       }
       return result;
@@ -109,6 +110,11 @@ export function DraftWidget({ lang, ui, quiz, avatar, greeting }: { lang: Locale
   }, []);
   useEffect(() => { if (open && msgs.length === 0) start(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [open]);
   useEffect(() => { scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" }); }, [msgs, mini, voice.state]);
+  // Lets the request form make room for the chat (see RequestProvider).
+  useEffect(() => {
+    document.documentElement.dataset.draftOpen = open ? (mini ? "mini" : "panel") : "";
+    return () => { delete document.documentElement.dataset.draftOpen; };
+  }, [open, mini]);
   useEffect(() => { voice.reportPage(pathname); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [pathname]);
   useEffect(() => {
     if (!open) return;
@@ -208,7 +214,11 @@ export function DraftWidget({ lang, ui, quiz, avatar, greeting }: { lang: Locale
           <motion.div
             initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }} transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             data-draft="mini"
-            className="fixed inset-x-3 bottom-3 z-[70] flex items-center gap-3 rounded-2xl bg-navy p-3 text-white shadow-2xl ring-1 ring-white/10 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px]"
+            className={cx(
+              "fixed inset-x-3 flex items-center gap-3 rounded-2xl bg-navy p-3 text-white shadow-2xl ring-1 ring-white/10 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px]",
+              // While a form is open Draft stays on top of it: above the sheet on phones, in the corner on larger screens.
+              formOpen ? "top-3 z-[90] sm:top-auto" : "bottom-3 z-[70]",
+            )}
           >
             {voice.active ? <Orb level={voice.level} state={voice.state} size={48} /> : <Avatar src={avatar} className="size-12" />}
             <button type="button" onClick={() => setMini(false)} className="min-w-0 flex-1 text-left" aria-label={d.expand}>
@@ -234,7 +244,7 @@ export function DraftWidget({ lang, ui, quiz, avatar, greeting }: { lang: Locale
             role="dialog" aria-label={d.title} data-draft="panel"
             initial={{ opacity: 0, y: 32, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 24, scale: 0.97 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-x-0 bottom-0 z-[70] flex h-[min(680px,92dvh)] flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl ring-1 ring-line sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px] sm:rounded-3xl"
+            className={cx("fixed inset-x-0 bottom-0 flex h-[min(680px,92dvh)] flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl ring-1 ring-line sm:inset-x-auto sm:bottom-6 sm:right-6 sm:w-[400px] sm:rounded-3xl", formOpen ? "z-[70] lg:z-[90]" : "z-[70]")}
           >
             <div className="night flex items-center gap-3 px-5 py-4 text-white">
               <Avatar src={avatar} className="size-12" />
