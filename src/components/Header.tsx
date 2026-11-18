@@ -79,7 +79,7 @@ export function Header({ lang, ui, nav }: { lang: Locale; ui: UI; nav: NavItem[]
       <div className={cx("border-b transition-[background-color,box-shadow,border-color] duration-300", scrolled ? "border-line bg-white/85 shadow-[0_10px_30px_-18px_rgb(13_27_39/0.35)] backdrop-blur-xl" : "border-transparent bg-white")}>
         <div className="container-x flex h-[68px] items-center justify-between gap-6">
           <Link href={href(lang)} aria-label={ui.brand} className="shrink-0 transition-opacity hover:opacity-80">
-            <Logo />
+            <Logo lang={lang} />
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">

@@ -1,4 +1,11 @@
-export function Logo({ dark = false, className = "" }: { dark?: boolean; className?: string }) {
+const caption: Record<string, [string, string]> = {
+  ru: ["Европейские", "технологии"],
+  en: ["European", "Technologies"],
+  de: ["Europäische", "Technologien"],
+};
+
+export function Logo({ dark = false, className = "", lang = "ru" }: { dark?: boolean; className?: string; lang?: string }) {
+  const [a, b] = caption[lang] ?? caption.ru;
   return (
     <span className={`inline-flex items-center gap-3 ${className}`}>
       <svg viewBox="0 0 96 44" className="h-9 w-auto shrink-0" aria-hidden="true">
@@ -14,9 +21,9 @@ export function Logo({ dark = false, className = "" }: { dark?: boolean; classNa
         </g>
       </svg>
       <span className={`border-l pl-3 text-[11px] font-semibold uppercase leading-[1.15] tracking-[0.14em] ${dark ? "border-white/25 text-white" : "border-ink/20 text-ink"}`}>
-        Европейские
+        {a}
         <br />
-        технологии
+        {b}
       </span>
     </span>
   );

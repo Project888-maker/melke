@@ -61,8 +61,8 @@ export default async function Contacts({ params }: { params: Promise<{ lang: str
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted">{p.company.title}</h2>
             <dl className="mt-3 grid gap-x-10 gap-y-2 text-[17px] sm:grid-cols-3">
               <div><dt className="text-[13px] text-muted">{ui.brand}</dt><dd className="font-medium">{p.company.name}</dd></div>
-              <div><dt className="text-[13px] text-muted">ИНН</dt><dd className="font-medium">{company.inn}</dd></div>
-              <div><dt className="text-[13px] text-muted">ОГРН</dt><dd className="font-medium">{company.ogrn}</dd></div>
+              <div><dt className="text-[13px] text-muted">{lang === "ru" ? "ИНН" : "INN"}</dt><dd className="font-medium">{company.inn}</dd></div>
+              <div><dt className="text-[13px] text-muted">{lang === "ru" ? "ОГРН" : "OGRN"}</dt><dd className="font-medium">{company.ogrn}</dd></div>
             </dl>
           </Reveal>
         </div>

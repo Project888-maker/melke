@@ -83,8 +83,8 @@ const text: Record<string, Partial<WindowSystem>> = {
       { title: "Easy opening", text: "We agree on sashes, handles and hardware with you.", img: ru[1].features[2].img },
     ],
     about: [
-      "A five-chamber profile with 3 mm outer walls, a thermoplastic elastomer seal and a double-chamber glazing unit keep rooms warm and quiet.",
-      "Melke Evolution suits both apartments with central heating (with a single-chamber glazing unit) and private houses. A 40 mm double-chamber glazing unit keeps the heat in during winter and the heat out in summer.",
+      "A five-chamber profile with 3 mm outer walls, a thermoplastic elastomer seal and triple glazing keep rooms warm and quiet.",
+      "Melke Evolution suits both apartments with central heating (with double glazing) and private houses. A 40 mm triple-glazed unit keeps the heat in during winter and the heat out in summer.",
       "Cool Colours technology preserves the depth of colour and the strength of the material for many years.",
     ],
     interiorTitle: "For the apartment. For the house. For you.",

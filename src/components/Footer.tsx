@@ -10,7 +10,7 @@ export function Footer({ lang, ui, nav, address, factory }: { lang: Locale; ui: 
     <footer className="bg-navy text-white/75">
       <div className="container-x grid gap-10 py-12 lg:grid-cols-[1.1fr_1.4fr_1.3fr] lg:py-14">
         <div>
-          <Link href={href(lang)} aria-label={ui.brand}><Logo dark /></Link>
+          <Link href={href(lang)} aria-label={ui.brand}><Logo dark lang={lang} /></Link>
           <p className="mt-6 max-w-xs text-sm leading-relaxed text-white/55">{ui.footer.rights}</p>
           <div className="mt-6 flex gap-2.5">
             <a href={company.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram" className="grid size-11 place-items-center rounded-full bg-white/8 text-white transition hover:-translate-y-0.5 hover:bg-cyan hover:text-ink">
@@ -62,7 +62,7 @@ export function Footer({ lang, ui, nav, address, factory }: { lang: Locale; ui: 
       </div>
       <div className="border-t border-white/10">
         <div className="container-x flex flex-wrap items-center justify-between gap-3 py-5 text-[13px] text-white/45">
-          <span>© 2008–{new Date().getFullYear()} ООО «Европейские Технологии»</span>
+          <span>© 2008–{new Date().getFullYear()} {lang === "ru" ? "ООО «Европейские Технологии»" : lang === "de" ? "OOO Europäische Technologien" : "OOO European Technologies"}</span>
           <Link href={href(lang, "politika")} className="transition hover:text-cyan">{ui.form.policy}</Link>
         </div>
       </div>

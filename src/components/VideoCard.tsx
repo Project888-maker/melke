@@ -24,7 +24,7 @@ export function VideoCard({ poster, src, label, caption }: { poster: string; src
                 <Icon name="play" className="ml-1 size-9" strokeWidth={2} />
               </motion.span>
             </span>
-            {failed && <span className="absolute inset-x-0 bottom-4 text-center text-sm text-white/80">Видео временно недоступно</span>}
+            {failed && <span className="absolute inset-x-0 bottom-4 text-center text-sm text-white/80">▶</span>}
           </button>
         )}
       </div>

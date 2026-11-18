@@ -1,0 +1,158 @@
+import { pages as ru } from "../ru/pages";
+
+export const pages: typeof ru = {
+  home: {
+    meta: { title: "ET windows on Melke profiles in Kaliningrad — European Technologies", description: "Manufacturer of PVC and aluminium window systems in Kaliningrad. ET windows on Melke profiles, HST doors, balcony and terrace glazing. Free measurement." },
+    hero: {
+      kicker: "The simple way to fresh air",
+      title: ["Our people.", "Our production.", "Your comfort."],
+      lead: "ET windows on Melke profiles: made and installed in Kaliningrad and the region since 2008.",
+      img: ru.home.hero.img,
+      figure: ru.home.hero.figure,
+    },
+    stats: [
+      { value: "2008", label: "Year the company was founded" },
+      { value: "2011", label: "Launch of our own production" },
+      { value: "Class A", label: "Air tightness of Melke profiles" },
+      { value: "40 years", label: "Simulated service life in ROSTEST testing" },
+    ],
+    systems: { title: "ET windows", lead: "Three Melke profile systems: choose the foundation of comfort for your home." },
+    why: {
+      title: "Why PVC windows",
+      lead: "Modern PVC windows serve reliably for decades and need no maintenance.",
+      items: [
+        { icon: "flame", title: "Keep the heat in", text: "Double- and triple-glazed units and a well-engineered window construction." },
+        { icon: "wind", title: "No draughts", text: "A two-contour sealing system with a frost-resistant gasket." },
+        { icon: "sparkles", title: "No maintenance", text: "No painting or winter insulation needed; they look good for years." },
+        { icon: "hand", title: "Easy every day", text: "One handle controls a sash that both swings open and tilts." },
+      ],
+    },
+    solutions: { title: "Solutions for any project", lead: "From an apartment to a terrace with panoramic portals." },
+    projects: { title: "Our projects", lead: "Residential complexes, private houses and public buildings across the Kaliningrad region." },
+    news: { title: "Company news" },
+  },
+  windows: {
+    meta: { title: "ET windows on Melke profile systems", description: "ET window catalogue: Melke Centum, Melke Evolution and Melke Smart Ultra. Compare the specifications of the profile systems." },
+    hero: { title: "Windows", accent: "ET", lead: "We make windows on Melke profile systems.", note: "ET windows are made from Melke profiles.", img: ru.windows.hero.img },
+    cardTitle: "ET windows",
+    cardPrefix: "Profile",
+    widthLabel: "Installation depth",
+    compare: { title: "The difference is in the profile", lead: "Specifications of the Melke profile systems.", note: "All systems are designed to meet modern requirements for comfort, reliability and energy efficiency.", row: "Specification", empty: "There is only one system in this category so far. See all systems." },
+    cta: { title: "Not sure what to choose?", text: "Draft will help you understand the systems and find the best solution for your home." },
+    product: { title: "ET windows", specs: "Profile specifications", aboutTitle: "About the system", otherTitle: "Other systems" },
+  },
+  solutions: {
+    meta: { title: "Solutions: profile systems, HST doors, glazing", description: "Melke Lite 60, Aluplast and WITAL profiles, lift-and-slide HST doors, glazing of balconies, loggias and terraces." },
+    hero: { title: "Solutions", lead: "Profile systems, portals and glazing matched to your project." },
+    cta: { title: "We will find the right solution for your project", text: "Tell us about the task: we will suggest a system, a configuration and a timeline." },
+  },
+  accessories: {
+    meta: { title: "ET accessories: nets, sills, safety, garage doors", description: "Mosquito nets, window sills, child locks, blinds, roller shutters, warm base profile and garage doors." },
+  },
+  projects: {
+    meta: { title: "Our projects — case studies by European Technologies", description: "Glazing of residential complexes, private houses and public buildings in Kaliningrad and the region." },
+    title: "Our projects",
+    lead: "Case studies by European Technologies",
+    count: (n: number) => `${n} ${n === 1 ? "project" : "projects"}`,
+    cta: { title: "Every project has its own task. Tell us about yours.", text: "We will help you find the best solution for your property." },
+    gallery: "Project photos",
+    about: "About the project",
+    specs: "Specifications",
+    next: "Next project",
+  },
+  about: {
+    meta: { title: "About European Technologies", description: "Manufacturer of PVC and aluminium window systems in Kaliningrad. In business since 2008, with our own production since 2011." },
+    hero: { title: ["Our people.", "Our production.", "Your comfort."], lead: "European Technologies: windows and glazing in Kaliningrad.", img: ru.about.hero.img },
+    idea: {
+      title: "From idea to installed window",
+      lead: "We select the solution, manufacture the structures and carry out the installation.",
+      img: ru.about.idea.img,
+      items: [
+        { icon: "settings", title: "Clear selection", text: "We consider the property, the task and your wishes, and help you find the best solution." },
+        { icon: "file", title: "Agreed configuration", text: "We select windows, doors and glazing with clear specifications and transparent decisions." },
+        { icon: "hardhat", title: "Care in installation", text: "We install carefully and in line with the agreed design. Your comfort comes first." },
+      ],
+    },
+    story: {
+      title: "A manufacturer of PVC and aluminium window systems",
+      text: [
+        "The company has been operating since 2008, and our own production was launched in 2011. We offer a wide range of products, from budget solutions to premium models.",
+        "Our windows are reliable, stylish and comfortable. You will find the ideal solution in any size and shape, including the most unusual structures. And the exclusive Melke Cool Colours coating gives windows unique shades and resistance to the elements.",
+      ],
+    },
+    video: { title: "The company in its own words", sub: "Meet European Technologies.", text: "Our approach to making windows and working with clients.", caption: "Company video (in Russian)", poster: ru.about.video.poster, src: ru.about.video.src },
+    visit: { title: "Let's get to know each other", text: "Come to our office in Kaliningrad. We will show you the solutions, answer your questions and help you choose the best option." },
+  },
+  steps: {
+    title: "How we work",
+    lead: "A simple and clear path to your new window.",
+    items: [
+      { icon: "chat", title: "Understanding the task", text: "We discuss the property, the task and your wishes." },
+      { icon: "ruler", title: "Measurement", text: "We take precise measurements on site and clarify the details." },
+      { icon: "factory", title: "Manufacturing", text: "We assemble and manufacture the structures to the agreed specifications." },
+      { icon: "wrench", title: "Installation", text: "We deliver and install within the agreed time." },
+    ],
+  },
+  draft: {
+    title: "Meet Draft",
+    lead: "The ET hero. On the side of your comfort.",
+    img: ru.draft.img,
+    items: [
+      { icon: "chat", title: "Explains", text: "Solutions and technology in plain words." },
+      { icon: "pointer", title: "Helps you choose", text: "Finds the best options for your needs." },
+      { icon: "settings", title: "Shows the technology", text: "Shows how windows make a home more comfortable." },
+    ],
+  },
+  partners: {
+    title: "Our partners",
+    lead: "We work with reliable suppliers and partners to offer you quality solutions.",
+    items: ["TBM", "Alumark", "Internika", "Melke", "GlassCom", "ETS Group"],
+  },
+  news: {
+    meta: { title: "News from European Technologies", description: "Events, seminars and production news." },
+    title: "News",
+    lead: "Company and window industry events.",
+    back: "All news",
+  },
+  contacts: {
+    meta: { title: "Contacts — European Technologies, Kaliningrad", description: "Office: 186/1 Moskovsky Prospekt, office 304, Kaliningrad. Phone +7 (4012) 98-70-08." },
+    title: "Contacts",
+    lead: "Visit the office, call us or leave a request and we will call you back during working hours.",
+    office: { title: "Office", address: "186/1 Moskovsky Prospekt, office 304, Kaliningrad, Russia", hours: "Monday to Friday, 9:00 – 17:00" },
+    factory: { title: "Production", address: "31L Alleya Smelykh, Kaliningrad, Russia", hours: "Monday to Friday, 8:00 – 17:00" },
+    company: { title: "Company details", name: "OOO European Technologies (ООО «Европейские Технологии»)" },
+    formTitle: "Leave a request",
+    formLead: "Tell us about your task and we will suggest a solution.",
+    onMap: "Open on the map",
+    messengers: "We are on Telegram",
+  },
+  privacy: {
+    title: "Privacy policy",
+    text: [
+      "OOO European Technologies (INN 3906253655) processes the personal data you leave in the forms on this site: your name, phone number and the text of your message.",
+      "The data is used only to contact you about your request, prepare a quote and arrange a measurement. We do not pass it to third parties, except where required by the law of the Russian Federation.",
+      "You can withdraw your consent to the processing of personal data by writing to eurotexno@mail.ru.",
+      "The information on this site is not a public offer.",
+    ],
+  },
+  quiz: {
+    hello: "Hi! I'm Draft. I'll help you choose windows in a couple of questions. What are we glazing?",
+    q1: [
+      { key: "flat", label: "Apartment" },
+      { key: "house", label: "Country house" },
+      { key: "balcony", label: "Balcony or loggia" },
+      { key: "terrace", label: "Terrace, pavilion" },
+    ],
+    q2: "What matters most to you?",
+    a2: [
+      { key: "warm", label: "Warmth" },
+      { key: "quiet", label: "Quiet" },
+      { key: "price", label: "Sensible price" },
+      { key: "look", label: "Colour and design" },
+    ],
+    result: "Here is what I would look at first:",
+    after: "I can book a free measurement for you or pass your question to a manager.",
+    objectLabels: { flat: "Apartment", house: "Country house", balcony: "Balcony or loggia", terrace: "Terrace, pavilion", other: "Other" },
+    fallback: "I'll pass your question to a manager. Leave your phone number and we will call you back during working hours. In the meantime, this may help:",
+  },
+};

@@ -1,0 +1,158 @@
+import { pages as ru } from "../ru/pages";
+
+export const pages: typeof ru = {
+  home: {
+    meta: { title: "ET-Fenster aus Melke-Profilen in Kaliningrad — Europäische Technologien", description: "Hersteller von Fenstersystemen aus PVC und Aluminium in Kaliningrad. ET-Fenster aus Melke-Profilen, HST-Türen, Balkon- und Terrassenverglasung. Kostenloses Aufmaß." },
+    hero: {
+      kicker: "Der einfache Weg zu frischer Luft",
+      title: ["Eigene Leute.", "Eigene Fertigung.", "Ihr Komfort."],
+      lead: "ET-Fenster aus Melke-Profilen: Fertigung und Montage in Kaliningrad und im Gebiet seit 2008.",
+      img: ru.home.hero.img,
+      figure: ru.home.hero.figure,
+    },
+    stats: [
+      { value: "2008", label: "Gründungsjahr des Unternehmens" },
+      { value: "2011", label: "Start der eigenen Fertigung" },
+      { value: "Klasse A", label: "Dichtheit der Melke-Profile" },
+      { value: "40 Jahre", label: "Simulierte Nutzungsdauer laut ROSTEST-Prüfung" },
+    ],
+    systems: { title: "ET-Fenster", lead: "Drei Melke-Profilsysteme: Wählen Sie die Grundlage für den Komfort Ihres Zuhauses." },
+    why: {
+      title: "Warum Kunststofffenster",
+      lead: "Moderne Kunststofffenster halten zuverlässig über Jahrzehnte und brauchen keine Pflege.",
+      items: [
+        { icon: "flame", title: "Halten die Wärme", text: "Zweifach- und Dreifachverglasung und eine durchdachte Fensterkonstruktion." },
+        { icon: "wind", title: "Keine Zugluft", text: "Zwei Dichtungsebenen mit frostbeständiger Dichtung." },
+        { icon: "sparkles", title: "Pflegeleicht", text: "Kein Streichen, kein Abdichten für den Winter; das Aussehen bleibt über Jahre erhalten." },
+        { icon: "hand", title: "Bequem im Alltag", text: "Ein Griff bedient den Flügel, der sich drehen und kippen lässt." },
+      ],
+    },
+    solutions: { title: "Lösungen für jedes Objekt", lead: "Von der Wohnung bis zur Terrasse mit Panoramaportalen." },
+    projects: { title: "Unsere Projekte", lead: "Wohnanlagen, Privathäuser und öffentliche Gebäude im Kaliningrader Gebiet." },
+    news: { title: "Neuigkeiten" },
+  },
+  windows: {
+    meta: { title: "ET-Fenster aus Melke-Profilsystemen", description: "Katalog der ET-Fenster: Melke Centum, Melke Evolution und Melke Smart Ultra. Vergleich der Kennwerte der Profilsysteme." },
+    hero: { title: "Fenster", accent: "ET", lead: "Wir fertigen Fenster aus Melke-Profilsystemen.", note: "ET-Fenster werden aus Melke-Profilen gefertigt.", img: ru.windows.hero.img },
+    cardTitle: "ET-Fenster",
+    cardPrefix: "Profil",
+    widthLabel: "Bautiefe",
+    compare: { title: "Der Unterschied liegt im Profil", lead: "Kennwerte der Melke-Profilsysteme.", note: "Alle Systeme sind auf moderne Anforderungen an Komfort, Zuverlässigkeit und Energieeffizienz ausgelegt.", row: "Kennwert", empty: "In dieser Kategorie gibt es bisher nur ein System. Alle Systeme ansehen." },
+    cta: { title: "Unsicher bei der Auswahl?", text: "Draft erklärt die Besonderheiten der Systeme und findet die passende Lösung für Ihr Zuhause." },
+    product: { title: "ET-Fenster", specs: "Profilkennwerte", aboutTitle: "Über das System", otherTitle: "Weitere Systeme" },
+  },
+  solutions: {
+    meta: { title: "Lösungen: Profilsysteme, HST-Türen, Verglasung", description: "Profile Melke Lite 60, Aluplast und WITAL, Hebe-Schiebe-Türen HST, Verglasung von Balkonen, Loggien und Terrassen." },
+    hero: { title: "Lösungen", lead: "Profilsysteme, Portale und Verglasung passend zu Ihrem Objekt." },
+    cta: { title: "Wir finden die Lösung für Ihr Objekt", text: "Schildern Sie uns die Aufgabe: Wir schlagen System, Ausstattung und Termine vor." },
+  },
+  accessories: {
+    meta: { title: "ET-Zubehör: Insektenschutz, Fensterbänke, Sicherheit, Tore", description: "Insektenschutzgitter, Fensterbänke, Kindersicherungen, Jalousien, Rollläden, warmes Basisprofil und Garagentore." },
+  },
+  projects: {
+    meta: { title: "Unsere Projekte — Referenzen von Europäische Technologien", description: "Verglasung von Wohnanlagen, Privathäusern und öffentlichen Gebäuden in Kaliningrad und im Gebiet." },
+    title: "Unsere Projekte",
+    lead: "Referenzen von Europäische Technologien",
+    count: (n: number) => `${n} ${n === 1 ? "Projekt" : "Projekte"}`,
+    cta: { title: "Jedes Projekt hat seine eigene Aufgabe. Erzählen Sie uns von Ihrer.", text: "Wir helfen Ihnen, die beste Lösung für Ihr Objekt zu finden." },
+    gallery: "Fotos des Objekts",
+    about: "Über das Projekt",
+    specs: "Kennwerte",
+    next: "Nächstes Projekt",
+  },
+  about: {
+    meta: { title: "Über Europäische Technologien", description: "Hersteller von Fenstersystemen aus PVC und Aluminium in Kaliningrad. Seit 2008 am Markt, eigene Fertigung seit 2011." },
+    hero: { title: ["Eigene Leute.", "Eigene Fertigung.", "Ihr Komfort."], lead: "Europäische Technologien: Fenster und Verglasung in Kaliningrad.", img: ru.about.hero.img },
+    idea: {
+      title: "Von der Idee bis zum eingebauten Fenster",
+      lead: "Wir wählen die Lösung aus, fertigen die Elemente und übernehmen die Montage.",
+      img: ru.about.idea.img,
+      items: [
+        { icon: "settings", title: "Verständliche Auswahl", text: "Wir berücksichtigen Objekt, Aufgabe und Wünsche und helfen Ihnen, die beste Lösung zu finden." },
+        { icon: "file", title: "Abgestimmte Ausstattung", text: "Wir wählen Fenster, Türen und Verglasung mit klaren Kennwerten und nachvollziehbaren Entscheidungen." },
+        { icon: "hardhat", title: "Sorgfalt bei der Montage", text: "Wir montieren sauber und entsprechend der abgestimmten Planung. Ihr Komfort hat Vorrang." },
+      ],
+    },
+    story: {
+      title: "Hersteller von Fenstersystemen aus PVC und Aluminium",
+      text: [
+        "Das Unternehmen besteht seit 2008, die eigene Fertigung wurde 2011 aufgenommen. Wir bieten ein breites Sortiment, von preiswerten Lösungen bis zu Premiummodellen.",
+        "Unsere Fenster sind zuverlässig, stilvoll und komfortabel. Sie finden die ideale Lösung in jeder Größe und Form, auch für ganz ungewöhnliche Konstruktionen. Die exklusive Beschichtung Melke Cool Colours verleiht den Fenstern einzigartige Farbtöne und Beständigkeit gegen äußere Einflüsse.",
+      ],
+    },
+    video: { title: "Das Unternehmen in eigenen Worten", sub: "Lernen Sie Europäische Technologien kennen.", text: "Unser Ansatz bei der Fensterfertigung und in der Arbeit mit Kunden.", caption: "Unternehmensvideo (auf Russisch)", poster: ru.about.video.poster, src: ru.about.video.src },
+    visit: { title: "Lernen wir uns kennen", text: "Besuchen Sie unser Büro in Kaliningrad. Wir zeigen Ihnen Lösungen, beantworten Ihre Fragen und helfen bei der Auswahl." },
+  },
+  steps: {
+    title: "So arbeiten wir",
+    lead: "Ein einfacher und klarer Weg zu Ihrem neuen Fenster.",
+    items: [
+      { icon: "chat", title: "Aufgabe verstehen", text: "Wir besprechen Objekt, Aufgabe und Ihre Wünsche." },
+      { icon: "ruler", title: "Aufmaß", text: "Wir messen vor Ort genau aus und klären die Details." },
+      { icon: "factory", title: "Fertigung", text: "Wir stellen die Elemente nach den abgestimmten Kennwerten zusammen und fertigen sie." },
+      { icon: "wrench", title: "Montage", text: "Wir liefern und montieren zum vereinbarten Termin." },
+    ],
+  },
+  draft: {
+    title: "Das ist Draft",
+    lead: "Der Held von ET. Auf der Seite Ihres Komforts.",
+    img: ru.draft.img,
+    items: [
+      { icon: "chat", title: "Erklärt", text: "Lösungen und Technik in einfachen Worten." },
+      { icon: "pointer", title: "Hilft bei der Auswahl", text: "Findet die besten Varianten für Ihre Aufgabe." },
+      { icon: "settings", title: "Zeigt die Technik", text: "Zeigt, wie Fenster ein Zuhause komfortabler machen." },
+    ],
+  },
+  partners: {
+    title: "Unsere Partner",
+    lead: "Wir arbeiten mit zuverlässigen Lieferanten und Partnern, um Ihnen hochwertige Lösungen zu bieten.",
+    items: ["TBM", "Alumark", "Internika", "Melke", "GlassCom", "ETS Group"],
+  },
+  news: {
+    meta: { title: "Neuigkeiten von Europäische Technologien", description: "Veranstaltungen, Seminare und Neues aus der Fertigung." },
+    title: "Neuigkeiten",
+    lead: "Ereignisse im Unternehmen und in der Fensterbranche.",
+    back: "Alle Neuigkeiten",
+  },
+  contacts: {
+    meta: { title: "Kontakt — Europäische Technologien, Kaliningrad", description: "Büro: Moskowski-Prospekt 186/1, Büro 304, Kaliningrad. Telefon +7 (4012) 98-70-08." },
+    title: "Kontakt",
+    lead: "Besuchen Sie unser Büro, rufen Sie an oder hinterlassen Sie eine Anfrage. Wir rufen während der Geschäftszeiten zurück.",
+    office: { title: "Büro", address: "Moskowski-Prospekt 186/1, Büro 304, Kaliningrad, Russland", hours: "Montag bis Freitag, 9:00 – 17:00" },
+    factory: { title: "Fertigung", address: "Alleja Smelych 31L, Kaliningrad, Russland", hours: "Montag bis Freitag, 8:00 – 17:00" },
+    company: { title: "Firmendaten", name: "OOO Europäische Technologien (ООО «Европейские Технологии»)" },
+    formTitle: "Anfrage senden",
+    formLead: "Schildern Sie uns Ihre Aufgabe, und wir schlagen eine Lösung vor.",
+    onMap: "Auf der Karte öffnen",
+    messengers: "Wir sind auf Telegram",
+  },
+  privacy: {
+    title: "Datenschutzerklärung",
+    text: [
+      "Die OOO Europäische Technologien (INN 3906253655) verarbeitet die personenbezogenen Daten, die Sie in den Formularen dieser Website hinterlassen: Name, Telefonnummer und Text Ihrer Nachricht.",
+      "Die Daten werden ausschließlich verwendet, um Sie zu Ihrer Anfrage zu kontaktieren, ein Angebot zu erstellen und einen Aufmaßtermin abzustimmen. Wir geben sie nicht an Dritte weiter, außer in den Fällen, die das Recht der Russischen Föderation vorsieht.",
+      "Sie können Ihre Einwilligung in die Verarbeitung personenbezogener Daten widerrufen, indem Sie an eurotexno@mail.ru schreiben.",
+      "Die Angaben auf dieser Website stellen kein öffentliches Angebot dar.",
+    ],
+  },
+  quiz: {
+    hello: "Hallo! Ich bin Draft. Mit ein paar Fragen helfe ich Ihnen bei der Fensterwahl. Was soll verglast werden?",
+    q1: [
+      { key: "flat", label: "Wohnung" },
+      { key: "house", label: "Haus auf dem Land" },
+      { key: "balcony", label: "Balkon oder Loggia" },
+      { key: "terrace", label: "Terrasse, Pavillon" },
+    ],
+    q2: "Was ist Ihnen am wichtigsten?",
+    a2: [
+      { key: "warm", label: "Wärme" },
+      { key: "quiet", label: "Ruhe" },
+      { key: "price", label: "Vernünftiger Preis" },
+      { key: "look", label: "Farbe und Design" },
+    ],
+    result: "Das würde ich mir zuerst ansehen:",
+    after: "Ich kann einen kostenlosen Aufmaßtermin für Sie vormerken oder Ihre Frage an einen Berater weitergeben.",
+    objectLabels: { flat: "Wohnung", house: "Haus auf dem Land", balcony: "Balkon oder Loggia", terrace: "Terrasse, Pavillon", other: "Sonstiges" },
+    fallback: "Ich gebe Ihre Frage an einen Berater weiter. Hinterlassen Sie Ihre Telefonnummer, wir rufen während der Geschäftszeiten zurück. Bis dahin hilft vielleicht das:",
+  },
+};
