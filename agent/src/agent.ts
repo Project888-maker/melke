@@ -97,6 +97,7 @@ class Draft extends voice.Agent {
     if (lang !== this.#said) {
       this.#said = lang;
       this.voiceOut.updateOptions({ voice: ttsVoice(lang), language: lang as never });
+      console.log(`[draft] voice switched to ${lang}`);
     }
     async function* whole() {
       yield* head;
@@ -204,6 +205,8 @@ export default defineAgent({
   entry: async (ctx: JobContext) => {
     const { lang, page } = jobSetup(ctx);
     const b = brain[lang];
+    // No transcripts in the logs: they can contain names and phone numbers.
+    console.log(`[draft] call started: site language ${lang}, page "${page}"`);
 
     const tts = new inference.TTS<never>({ model: TTS_MODEL as never, voice: ttsVoice(lang), language: lang });
     const agent = new Draft(
