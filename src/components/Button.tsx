@@ -27,7 +27,7 @@ export function BtnInner({ children, arrow = true, variant = "primary" }: { chil
       {variant === "primary" && (
         <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-white/45 blur-md animate-shine" />
       )}
-      <span className="relative">{children}</span>
+      <span className="relative inline-flex items-center gap-2.5">{children}</span>
       {arrow && (
         <Icon name="arrow" className="relative size-[18px] transition-transform duration-300 ease-out-soft group-hover/btn:translate-x-1" />
       )}
