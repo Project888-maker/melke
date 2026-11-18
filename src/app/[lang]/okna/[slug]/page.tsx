@@ -11,6 +11,7 @@ import { RequestButton } from "@/components/RequestProvider";
 import { ButtonLink } from "@/components/Button";
 import { SmartImg } from "@/components/SmartImg";
 import { Icon } from "@/components/Icon";
+import { ProfileShot } from "@/components/ProfileShot";
 
 type P = { params: Promise<{ lang: string; slug: string }> };
 const tone = { peach: "bg-peach", pink: "bg-pink", lime: "bg-lime", cyan: "bg-cyan-soft" } as const;
@@ -54,16 +55,15 @@ export default async function SystemPage({ params }: P) {
           </div>
           <Parallax className="relative mx-auto aspect-square w-full max-w-[560px]">
             <span aria-hidden className="absolute -inset-[6%] rounded-full bg-linear-to-br from-cyan/40 to-transparent blur-3xl" />
-            <span className="relative block size-full overflow-hidden rounded-[36px] shadow-lift ring-1 ring-ink/5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={s.heroImg} alt={s.name} fetchPriority="high" className="size-full object-cover transition-transform duration-[1400ms] ease-out-soft hover:scale-[1.04]" />
+            <span className="group relative block size-full overflow-hidden rounded-[36px] shadow-lift ring-1 ring-ink/5">
+              <ProfileShot src={s.heroCutout} alt={s.name} zoom={s.slug === "centum" ? "h-[112%]" : "h-[101%]"} priority />
             </span>
           </Parallax>
         </div>
-        <div className="pb-12"><StatStrip items={s.stats} title={w.product.specs} /></div>
+        <div id="specs" className="scroll-mt-28 pb-12"><StatStrip items={s.stats} title={w.product.specs} /></div>
       </section>
 
-      <section className="container-x py-14 sm:py-20">
+      <section id="features" className="container-x scroll-mt-24 py-14 sm:py-20">
         <SectionTitle title={s.sectionTitle} lead={s.sectionLead} />
         <div className="mt-10 grid gap-5 lg:grid-cols-[minmax(0,460px)_1fr]">
           <Reveal className="relative overflow-hidden rounded-3xl border border-line bg-linear-to-b from-[#eef4f8] to-white">
@@ -85,7 +85,7 @@ export default async function SystemPage({ params }: P) {
       </section>
 
       {s.about.length > 0 && (
-        <section className="bg-white">
+        <section id="about" className="scroll-mt-24 bg-white">
           <div className="container-x grid gap-8 py-14 sm:py-20 lg:grid-cols-[320px_1fr]">
             <Reveal><h2 className="h-display text-[32px] sm:text-[40px]">{w.product.aboutTitle}</h2></Reveal>
             <div className="max-w-3xl space-y-5">
@@ -95,7 +95,7 @@ export default async function SystemPage({ params }: P) {
         </section>
       )}
 
-      <section className="relative isolate overflow-hidden">
+      <section id="colors" className="relative isolate scroll-mt-24 overflow-hidden">
         <Parallax className="absolute inset-y-0 right-0 -z-10 w-full lg:w-[58%]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={s.interiorImg} alt="" loading="lazy" className="mask-fade-l size-full object-cover opacity-25 lg:opacity-100" />
@@ -118,14 +118,13 @@ export default async function SystemPage({ params }: P) {
         </div>
       </section>
 
-      <section className="container-x pb-16 sm:pb-20">
+      <section id="other" className="container-x scroll-mt-24 pb-16 sm:pb-20">
         <SectionTitle title={w.product.otherTitle} />
         <Stagger className="mt-8 grid gap-5 md:grid-cols-2">
           {others.map((o) => (
             <StaggerItem key={o.slug}>
               <Link href={href(lang, `okna/${o.slug}`)} className="group flex items-center gap-6 rounded-3xl border border-line bg-white p-4 transition-[transform,box-shadow,border-color] duration-500 ease-out-soft hover:-translate-y-1.5 hover:border-cyan/50 hover:shadow-lift">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={o.img} alt="" loading="lazy" className="aspect-square w-32 shrink-0 rounded-2xl bg-mist object-cover transition-transform duration-700 group-hover:scale-105 sm:w-40" />
+                <span className="relative block aspect-square w-32 shrink-0 overflow-hidden rounded-2xl sm:w-40"><ProfileShot src={o.cutout} alt="" /></span>
                 <span className="flex-1">
                   <span className={`inline-block rounded-full px-3 py-1 text-[13px] font-medium ${tone[o.badge.tone]}`}>{o.badge.text}</span>
                   <span className="mt-2 block text-2xl font-bold tracking-tight">{o.name}</span>

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { greeting } from "@/lib/assistant/brain";
 import type { ReactNode } from "react";
 import "@fontsource-variable/onest";
 import "./globals.css";
@@ -33,7 +34,7 @@ export default async function RootLayout({ children, params }: { children: React
           <Header lang={lang} ui={ui} nav={nav} />
           <main className="flex-1">{children}</main>
           <Footer lang={lang} ui={ui} nav={nav} address={c.pages.contacts.office.address} factory={c.pages.contacts.factory.address} />
-          <DraftWidget lang={lang} ui={ui} quiz={quiz} avatar={c.pages.draft.img} />
+          <DraftWidget lang={lang} ui={ui} quiz={quiz} avatar="/img/draft-avatar.webp" greeting={greeting[lang]} />
         </RequestProvider>
       </body>
     </html>

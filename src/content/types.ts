@@ -12,6 +12,9 @@ export type WindowSystem = {
   chambersLabel: string;
   img: string;
   heroImg: string;
+  /** Transparent cutouts of the profile for cards and the product hero. */
+  cutout: string;
+  heroCutout: string;
   heroTitle: string;
   heroLead: string;
   heroNote: string;

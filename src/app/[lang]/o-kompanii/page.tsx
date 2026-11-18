@@ -28,9 +28,10 @@ export default async function About({ params }: { params: Promise<{ lang: string
         ))}
         lead={a.hero.lead}
         image={a.hero.img}
+        video="/video/about-hero.mp4"
       />
 
-      <section className="container-x py-14 sm:py-20">
+      <section id="idea" className="container-x scroll-mt-24 py-14 sm:py-20">
         <div className="grid items-center gap-8 lg:grid-cols-2">
           <div>
             <Reveal><h2 className="h-display text-[34px] sm:text-5xl">{a.idea.title}</h2></Reveal>
@@ -51,7 +52,7 @@ export default async function About({ params }: { params: Promise<{ lang: string
         </Stagger>
       </section>
 
-      <section className="bg-white">
+      <section id="story" className="scroll-mt-24 bg-white">
         <div className="container-x grid gap-8 py-14 sm:py-20 lg:grid-cols-[1fr_1fr] lg:gap-14">
           <div>
             <Reveal><h2 className="h-display text-[32px] sm:text-[44px]">{a.story.title}</h2></Reveal>
@@ -70,7 +71,7 @@ export default async function About({ params }: { params: Promise<{ lang: string
         </div>
       </section>
 
-      <section className="container-x py-14 sm:py-20">
+      <section id="video" className="container-x scroll-mt-24 py-14 sm:py-20">
         <SectionTitle title={a.video.title} />
         <div className="mt-8 grid items-center gap-8 lg:grid-cols-[minmax(0,640px)_1fr]">
           <Reveal><VideoCard poster={a.video.poster} src={old(a.video.src)} label={a.video.title} caption={a.video.caption} /></Reveal>
@@ -85,7 +86,7 @@ export default async function About({ params }: { params: Promise<{ lang: string
       <DraftBand data={c.pages.draft} />
       <Partners data={c.pages.partners} />
 
-      <section className="border-t border-line bg-white">
+      <section id="visit" className="scroll-mt-24 border-t border-line bg-white">
         <div className="container-x grid items-center gap-6 py-10 lg:grid-cols-[auto_1fr_auto] lg:gap-12">
           <Reveal><h2 className="h-display max-w-xs text-[30px] sm:text-[38px]">{a.visit.title}</h2></Reveal>
           <Reveal delay={0.06}><p className="max-w-lg text-lg text-muted">{a.visit.text}</p></Reveal>

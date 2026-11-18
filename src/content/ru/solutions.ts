@@ -1,5 +1,5 @@
 import type { Solution } from "../types";
-import { old } from "@/lib/media";
+import { old, img } from "@/lib/media";
 
 const c = (f: string) => old(`/files/catalogue/${f}`);
 
@@ -16,7 +16,7 @@ export const solutions: Solution[] = [
     title: "Melke Lite 60",
     kicker: "Профиль Melke",
     lead: "Лёгкий трёхкамерный профиль для экономного остекления балконов, лоджий, террас и дачных домов.",
-    img: c("melke-lite-60.jpg"),
+    img: img("cat-melke-lite-60"),
     specs: [
       { value: "60 мм", label: "Монтажная глубина" },
       { value: "3 камеры", label: "Конструкция профиля" },
@@ -51,7 +51,7 @@ export const solutions: Solution[] = [
     title: "Профиль Aluplast",
     kicker: "Немецкая профильная система",
     lead: "Системы IDEAL 4000 и IDEAL 8000 для остекления домов и квартир.",
-    img: c("ideal-8000.jpg"),
+    img: img("cat-ideal-8000"),
     specs: [
       { value: "70 / 85 мм", label: "Монтажная глубина" },
       { value: "5 / 6 камер", label: "IDEAL 4000 / 8000" },
@@ -69,7 +69,7 @@ export const solutions: Solution[] = [
       },
       {
         title: "Система IDEAL 4000",
-        img: c("ideal-4000.jpg"),
+        img: img("cat-ideal-4000"),
         imgAlt: "Профиль Aluplast IDEAL 4000",
         text: ["Благородная простота, строгость и плавность линий. Гладкая поверхность и элегантные 15-градусные скосы придают дому привлекательный внешний вид."],
         list: [
@@ -85,7 +85,7 @@ export const solutions: Solution[] = [
       },
       {
         title: "Система IDEAL 8000",
-        img: c("ideal-8000.jpg"),
+        img: img("cat-ideal-8000"),
         imgAlt: "Профиль Aluplast IDEAL 8000",
         text: ["Система с прекрасной шумоизоляцией и улучшенной взломостойкостью оконной рамы."],
         list: [
@@ -107,7 +107,7 @@ export const solutions: Solution[] = [
     title: "Профиль WITAL",
     kicker: "Польская профильная система",
     lead: "Системы WITAL STANDART и WITAL PRESTIGE TERM с шестикамерным профилем.",
-    img: c("wital-prestige-term.jpg"),
+    img: img("cat-wital-prestige-term"),
     specs: [
       { value: "6 камер", label: "Строение профиля" },
       { value: "86 мм", label: "Глубина PRESTIGE TERM" },
@@ -123,7 +123,7 @@ export const solutions: Solution[] = [
       },
       {
         title: "WITAL STANDART",
-        img: c("wital-standart.jpg"),
+        img: img("cat-wital-standart"),
         imgAlt: "Профиль WITAL STANDART",
         list: [
           "Шестикамерный профиль и двухкамерные стеклопакеты: высокие теплоизоляционные и акустические свойства",
@@ -137,7 +137,7 @@ export const solutions: Solution[] = [
       },
       {
         title: "WITAL PRESTIGE TERM",
-        img: c("wital-prestige-term-2.jpg"),
+        img: img("cat-wital-prestige-term-2"),
         imgAlt: "Профиль WITAL PRESTIGE TERM",
         list: [
           "Шестикамерный профиль с монтажной глубиной 86 мм",

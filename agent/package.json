@@ -1,0 +1,24 @@
+{
+  "name": "draft-voice-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Draft, the ET voice assistant. Runs on LiveKit Agents.",
+  "scripts": {
+    "dev": "tsx src/agent.ts dev",
+    "start": "tsx src/agent.ts start",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@livekit/agents": "^1.10.0",
+    "@livekit/agents-plugin-openai": "^1.10.0",
+    "@types/node": "^26.6.6",
+    "dotenv": "^18.0.10",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "zod": "^4.6.7"
+  }
+}

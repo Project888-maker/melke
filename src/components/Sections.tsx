@@ -8,6 +8,7 @@ import { Reveal, Stagger, StaggerItem, Parallax } from "./Reveal";
 import { SmartImg } from "./SmartImg";
 import { ButtonLink } from "./Button";
 import { cx, href } from "@/lib/href";
+import { LoopVideo } from "./LoopVideo";
 
 export type Crumb = { label: string; path?: string };
 
@@ -32,14 +33,18 @@ export function Breadcrumbs({ lang, items, dark = false }: { lang: Locale; items
 
 /** Dark cinematic hero used on catalogue-level pages. */
 export function NightHero({
-  lang, crumbs, title, lead, note, image, children, tall = false,
-}: { lang: Locale; crumbs: Crumb[]; title: ReactNode; lead?: string; note?: string; image?: string; children?: ReactNode; tall?: boolean }) {
+  lang, crumbs, title, lead, note, image, video, children, tall = false,
+}: { lang: Locale; crumbs: Crumb[]; title: ReactNode; lead?: string; note?: string; image?: string; video?: string; children?: ReactNode; tall?: boolean }) {
   return (
     <section className="night relative isolate overflow-hidden text-white">
       {image && (
         <Parallax className="absolute inset-y-0 right-0 -z-10 w-full lg:w-[82%]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={image} alt="" fetchPriority="high" className="mask-fade-l size-full object-cover object-[78%_14%] opacity-45 sm:opacity-70 lg:opacity-100" />
+          {video ? (
+            <LoopVideo src={video} poster={image} className="mask-fade-l size-full object-cover object-[78%_14%] opacity-45 sm:opacity-70 lg:opacity-100" />
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={image} alt="" fetchPriority="high" className="mask-fade-l size-full object-cover object-[78%_14%] opacity-45 sm:opacity-70 lg:opacity-100" />
+          )}
         </Parallax>
       )}
       <div aria-hidden className="absolute inset-0 -z-10 bg-linear-to-r from-[#0a1722] via-[#0a1722]/80 to-transparent lg:via-[#0a1722]/40" />
@@ -102,7 +107,7 @@ export function CtaBand({ title, text, image, children }: { title: string; text?
 
 export function Steps({ data }: { data: Content["pages"]["steps"] }) {
   return (
-    <section className="container-x py-16 sm:py-20">
+    <section id="steps" className="scroll-mt-24 container-x py-16 sm:py-20">
       <SectionTitle title={data.title} aside={data.lead} />
       <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {data.items.map((s, i) => (
@@ -123,7 +128,7 @@ export function Steps({ data }: { data: Content["pages"]["steps"] }) {
 
 export function DraftBand({ data }: { data: Content["pages"]["draft"] }) {
   return (
-    <section className="cyan-band relative overflow-hidden">
+    <section id="draft" className="cyan-band relative scroll-mt-24 overflow-hidden">
       <div className="container-x relative grid gap-6 py-10 sm:grid-cols-[230px_1fr] sm:py-12 lg:grid-cols-[320px_1fr]">
         <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 hidden w-[240px] pt-2 sm:block lg:w-[320px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -154,7 +159,7 @@ export function DraftBand({ data }: { data: Content["pages"]["draft"] }) {
 
 export function Partners({ data }: { data: Content["pages"]["partners"] }) {
   return (
-    <section className="container-x py-16 sm:py-20">
+    <section id="partners" className="scroll-mt-24 container-x py-16 sm:py-20">
       <SectionTitle title={data.title} aside={data.lead} />
       <Stagger className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3" gap={0.05}>
         {data.items.map((p) => (

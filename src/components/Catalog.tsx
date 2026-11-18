@@ -8,6 +8,7 @@ import { btn, BtnInner } from "./Button";
 import { Icon } from "./Icon";
 import { Reveal } from "./Reveal";
 import { cx, href } from "@/lib/href";
+import { ProfileShot } from "@/components/ProfileShot";
 
 const tone = { peach: "bg-peach", pink: "bg-pink", lime: "bg-lime", cyan: "bg-cyan-soft" } as const;
 const catIcon: Record<string, string> = { all: "layout", warm: "flame", universal: "gem", compact: "scan" };
@@ -36,7 +37,7 @@ export function Catalog({ lang, ui, systems, categories, rows, t }: Props) {
 
   return (
     <>
-      <section className="container-x pt-6">
+      <section id="cats" className="container-x scroll-mt-28 pt-6">
         <LayoutGroup id="cats">
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4" role="tablist">
             {categories.map((c) => {
@@ -70,8 +71,7 @@ export function Catalog({ lang, ui, systems, categories, rows, t }: Props) {
                 >
                   <Link href={href(lang, `okna/${s.slug}`)} className="relative block aspect-[5/4] overflow-hidden rounded-2xl bg-[#eef3f7]" aria-label={s.name}>
                     <span className={cx("absolute left-3 top-3 z-10 rounded-full px-3.5 py-1.5 text-[13px] font-medium", tone[s.badge.tone])}>{s.badge.text}</span>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={s.img} alt={s.name} loading="lazy" className="absolute inset-0 size-full object-cover object-[50%_42%] transition-transform duration-700 ease-out-soft group-hover:scale-[1.07]" />
+                    <ProfileShot src={s.cutout} alt={s.name} />
                   </Link>
                   <div className="flex flex-1 flex-col px-3 pb-3 pt-5">
                     <h3 className="text-[26px] font-bold leading-none tracking-tight">{t.cardTitle}</h3>

@@ -67,12 +67,12 @@ export default async function Contacts({ params }: { params: Promise<{ lang: str
           </Reveal>
         </div>
 
-        <Reveal delay={0.1} className="relative self-start overflow-hidden rounded-3xl border border-line bg-white p-7 shadow-card sm:p-9 lg:sticky lg:top-32">
+        <div id="form" className="scroll-mt-32 self-start lg:sticky lg:top-32"><Reveal delay={0.1} className="relative overflow-hidden rounded-3xl border border-line bg-white p-7 shadow-card sm:p-9">
           <span aria-hidden className="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-[#0fd6f5] via-[#7eeafc] to-[#0fd6f5]" />
           <h2 className="h-display text-[28px] sm:text-[34px]">{p.formTitle}</h2>
           <p className="mt-2 text-muted">{p.formLead}</p>
           <div className="mt-6"><ContactForm /></div>
-        </Reveal>
+        </Reveal></div>
       </section>
 
       <section id="map" className="container-x scroll-mt-28 pb-16">

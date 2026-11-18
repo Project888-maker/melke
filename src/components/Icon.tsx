@@ -2,7 +2,7 @@ import {
   ArrowRight, BarChart3, Blinds, Check, ChevronDown, Diamond, Droplets, Factory, FileText, Flame, Gem, Grid2x2, Hand,
   HardHat, Mail, MapPin, Menu, MessageCircle, MessagesSquare, MousePointer2, PanelBottom, Phone, Play, Rows3, Ruler,
   Scan, Send, Settings, Shield, Sparkles, Thermometer, Warehouse, Wind, Wrench, X, Palette, Maximize2, Clock, Globe,
-  ChevronLeft, ChevronRight, Info, LayoutGrid, RotateCcw,
+  ChevronLeft, ChevronRight, Info, LayoutGrid, RotateCcw, Mic, MicOff, PhoneOff, ChevronUp, ExternalLink, AudioLines,
 } from "lucide-react";
 
 const map = {
@@ -13,6 +13,7 @@ const map = {
   send: Send, settings: Settings, shield: Shield, sparkles: Sparkles, thermometer: Thermometer,
   warehouse: Warehouse, wind: Wind, wrench: Wrench, x: X, palette: Palette, resize: Maximize2, clock: Clock,
   globe: Globe, left: ChevronLeft, right: ChevronRight, info: Info, layout: LayoutGrid, restart: RotateCcw,
+  mic: Mic, micOff: MicOff, hangup: PhoneOff, up: ChevronUp, open: ExternalLink, wave: AudioLines,
 } as const;
 
 export type IconName = keyof typeof map;

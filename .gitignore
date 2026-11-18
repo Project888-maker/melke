@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# voice agent
+/agent/node_modules
+/agent/.env*
+!/agent/.env.example

@@ -1,39 +1,156 @@
-import { NextResponse } from "next/server";
-import { company } from "@/lib/i18n";
+import { instructions, toolDefs, siteMap, type AssistantAction } from "@/lib/assistant/brain";
+import { fallbackAnswer } from "@/lib/assistant/fallback";
+import { isLocale, type Locale } from "@/lib/i18n";
 
 /**
- * Draft's answers to free-text questions. Until the language model is connected
- * (step 4 of the plan), questions are matched against a small knowledge base
- * built from the company's own content.
+ * Draft's text chat. Talks to any OpenAI-compatible chat completions endpoint:
+ *   LLM_BASE_URL  e.g. https://host/v1
+ *   LLM_API_KEY
+ *   LLM_MODEL
+ * The reply is streamed as newline-delimited JSON:
+ *   {"t":"delta","v":"text"}  {"t":"action","name":..,"args":..}  {"t":"kb",..}  {"t":"done"}
+ * Tools are visual: the browser performs them (open a page, scroll, open a form).
  */
-const kb: { test: RegExp; answer: string; links?: { label: string; path: string }[] }[] = [
-  { test: /(адрес|где вы|офис|находит|приех|карт|address|adresse|where)/i, answer: "Офис: Калининград, Московский проспект 186/1, оф. 304. Работаем с понедельника по пятницу, с 9:00 до 17:00. Производство: Аллея Смелых 31Л.", links: [{ label: "Контакты и карта", path: "kontakty" }] },
-  { test: /(телефон|позвон|номер|связат|phone|telefon)/i, answer: `Звоните: ${company.phone}. Ещё номера: +7 (911) 499-69-62 и +7 (906) 214-98-81. Почта: ${company.email}.`, links: [{ label: "Контакты", path: "kontakty" }] },
-  { test: /(час|время работ|график|режим|выходн|hours|öffnungs)/i, answer: "Офис работает с понедельника по пятницу, с 9:00 до 17:00. Производство — с 8:00 до 17:00." },
-  { test: /(цен|стоим|сколько стоит|прайс|расч[её]т|price|preis|cost)/i, answer: "Стоимость зависит от размеров, профиля, стеклопакета и фурнитуры, поэтому точную цену даёт расчёт. Оставьте заявку, и менеджер подготовит его под ваш проект." },
-  { test: /(замер|measure|aufma)/i, answer: "Замер бесплатный, в Калининграде и области. Мастер приедет, снимет размеры и уточнит детали. Запишу вас?" },
-  { test: /(centum|центум|т[её]пл|мороз|холод|энерго|warm)/i, answer: "Самая тёплая система — Melke Centum: шестикамерная рама 80 мм, семикамерная створка 100 мм, три контура уплотнения и стеклопакет до 50 мм. Лучший выбор для загородного дома.", links: [{ label: "Melke Centum", path: "okna/centum" }] },
-  { test: /(evolution|эволюшн|эволюци|квартир|универсал)/i, answer: "Для квартиры и дома чаще всего выбирают Melke Evolution: пятикамерный профиль 70 мм со стенкой 3 мм и стеклопакетом до 40 мм.", links: [{ label: "Melke Evolution", path: "okna/evolution" }] },
-  { test: /(smart|смарт|ultra|ультра)/i, answer: "Melke Smart Ultra — новая система: профиль 65 мм, 4 камеры, стеклопакет 28 или 36 мм.", links: [{ label: "Melke Smart Ultra", path: "okna/smart-ultra" }] },
-  { test: /(сравн|разниц|отлича|чем лучше|compare|vergleich)/i, answer: "Centum — максимум тепла (80/100 мм, 6/7 камер). Evolution — универсальная (70 мм, 5 камер). Smart Ultra — компактная новинка (65 мм, 4 камеры). В каталоге есть таблица сравнения.", links: [{ label: "Сравнить системы", path: "okna#compare" }] },
-  { test: /(балкон|лоджи)/i, answer: "Остекляем балконы и лоджии: тёплое остекление металлопластиковыми рамами и холодное — алюминиевой раздвижной системой Provedal.", links: [{ label: "Балконы и лоджии", path: "resheniya/balkony-i-lodzhii" }] },
-  { test: /(террас|бесед|веранд|алюмин|hst|раздвиж|портал|панорам)/i, answer: "Для террас и панорамных проёмов делаем подъёмно-раздвижные двери HST (до 6,5 м в ширину) и алюминиевые системы Alumark и Provedal.", links: [{ label: "Двери HST", path: "resheniya/dveri-hst" }, { label: "Алюминиевое остекление", path: "resheniya/alyuminievoe-osteklenie" }] },
-  { test: /(москит|сетк|комар|net)/i, answer: "Делаем рамочные, рулонные, плиссе и дверные москитные сетки на окна любых производителей. Обычно сетка готова на следующий день после замера.", links: [{ label: "Москитные сетки", path: "aksessuary/moskitnye-setki" }] },
-  { test: /(подоконн|отлив|откос|сэндвич|стеклопакет)/i, answer: "Комплектуем окна подоконниками, отливами, откосами из сэндвич-панелей и стеклопакетами под задачу.", links: [{ label: "Аксессуары", path: "aksessuary" }] },
-  { test: /(дет|ребен|ребён|безопасн|замок)/i, answer: "Для детской безопасности ставим ручки с ключом, детские замки и защитное остекление. Важно: москитная сетка от выпадения не защищает.", links: [{ label: "Безопасность", path: "aksessuary#safety" }] },
-  { test: /(цвет|ламин|антрацит|дерев|cool colou?rs)/i, answer: "Доступны белый, антрацит и отделка под дерево. Покрытие Melke Cool Colours сохраняет насыщенность цвета и устойчиво к нагреву. Доступность цвета уточняется при расчёте." },
-  { test: /(гарант|срок служб|долговеч)/i, answer: "По испытаниям РОСТЕСТ характеристики пластикового профиля не меняются на протяжении 40 условных лет эксплуатации. Условия гарантии на конкретный заказ уточнит менеджер." },
-  { test: /(о компани|кто вы|давно|производств|опыт)/i, answer: "«Европейские технологии» — производитель оконных систем из ПВХ и алюминия в Калининграде. Работаем с 2008 года, собственное производство с 2011 года.", links: [{ label: "О компании", path: "o-kompanii" }] },
-];
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
+type ChatMsg = { role: "system" | "user" | "assistant" | "tool"; content: string | null; tool_calls?: ToolCall[]; tool_call_id?: string };
+type ToolCall = { id: string; type: "function"; function: { name: string; arguments: string } };
+
+const hits = new Map<string, { n: number; t: number }>();
+function limited(ip: string) {
+  const now = Date.now();
+  const h = hits.get(ip);
+  if (!h || now - h.t > 5 * 60_000) { hits.set(ip, { n: 1, t: now }); return false; }
+  h.n += 1;
+  return h.n > 40;
+}
+
+function toolResult(lang: Locale, a: AssistantAction): string {
+  if (a.name === "show_page") {
+    const page = siteMap(lang).find((p) => p.path === a.args.path);
+    return page ? `Opened "${page.title}"${a.args.section ? `, section ${a.args.section}` : ""}. The visitor sees it now.` : "No such page. Use a path from the site map.";
+  }
+  if (a.name === "scroll_page") return "Scrolled.";
+  if (a.name === "open_request_form") return "The request form is open on the visitor's screen. They fill in name and phone themselves.";
+  return "The consultation form is open with your summary. A manager will call back during working hours (Mon–Fri 9:00–17:00).";
+}
+
+/** One model round. Streams text deltas through onDelta and returns the full message. */
+async function round(messages: ChatMsg[], tools: unknown, onDelta: (v: string) => void, signal: AbortSignal) {
+  const call = (limits: Record<string, unknown>) =>
+    fetch(`${process.env.LLM_BASE_URL!.replace(/\/$/, "")}/chat/completions`, {
+      method: "POST",
+      signal,
+      headers: { "content-type": "application/json", authorization: `Bearer ${process.env.LLM_API_KEY}` },
+      body: JSON.stringify({ model: process.env.LLM_MODEL, messages, tools, tool_choice: "auto", stream: true, ...limits }),
+    });
+  let res = await call({ temperature: 0.4, max_tokens: 600 });
+  // Newer reasoning models reject max_tokens / temperature; retry in their dialect.
+  if (res.status === 400) {
+    const why = await res.text();
+    if (!/max_tokens|temperature/i.test(why)) throw new Error(`LLM 400: ${why.slice(0, 300)}`);
+    res = await call({ max_completion_tokens: 1200 });
+  }
+  if (!res.ok) throw new Error(`LLM ${res.status}: ${(await res.text()).slice(0, 300)}`);
+
+  let content = "";
+  const calls: ToolCall[] = [];
+  const type = res.headers.get("content-type") ?? "";
+  if (!type.includes("event-stream") || !res.body) {
+    const j = await res.json();
+    const m = j.choices?.[0]?.message ?? {};
+    content = m.content ?? "";
+    if (content) onDelta(content);
+    return { content, calls: (m.tool_calls ?? []) as ToolCall[] };
+  }
+
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let nl: number;
+    while ((nl = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, nl).trim();
+      buf = buf.slice(nl + 1);
+      if (!line.startsWith("data:")) continue;
+      const data = line.slice(5).trim();
+      if (!data || data === "[DONE]") continue;
+      let j: { choices?: { delta?: { content?: string; tool_calls?: { index?: number; id?: string; function?: { name?: string; arguments?: string } }[] } }[] };
+      try { j = JSON.parse(data); } catch { continue; }
+      const d = j.choices?.[0]?.delta;
+      if (!d) continue;
+      if (d.content) { content += d.content; onDelta(d.content); }
+      for (const tc of d.tool_calls ?? []) {
+        const i = tc.index ?? 0;
+        calls[i] ??= { id: tc.id ?? `call_${i}`, type: "function", function: { name: "", arguments: "" } };
+        if (tc.id) calls[i].id = tc.id;
+        if (tc.function?.name) calls[i].function.name += tc.function.name;
+        if (tc.function?.arguments) calls[i].function.arguments += tc.function.arguments;
+      }
+    }
+  }
+  return { content, calls: calls.filter(Boolean) };
+}
 
 export async function POST(request: Request) {
-  let question = "";
-  try {
-    question = String((await request.json()).question ?? "").slice(0, 500);
-  } catch {
-    return NextResponse.json({ ok: false }, { status: 400 });
-  }
-  const hit = kb.find((k) => k.test.test(question));
-  if (hit) return NextResponse.json({ ok: true, answer: hit.answer, links: hit.links ?? [], matched: true });
-  return NextResponse.json({ ok: true, matched: false, answer: "", links: [{ label: "Каталог окон", path: "okna" }, { label: "Контакты", path: "kontakty" }] });
+  let body: { lang?: string; messages?: { role: string; content: string }[]; page?: string };
+  try { body = await request.json(); } catch { return Response.json({ ok: false }, { status: 400 }); }
+
+  const lang: Locale = body.lang && isLocale(body.lang) ? body.lang : "ru";
+  const history = (body.messages ?? [])
+    .filter((m) => (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
+    .slice(-16)
+    .map((m) => ({ role: m.role as "user" | "assistant", content: m.content.slice(0, 1200) }));
+  const last = [...history].reverse().find((m) => m.role === "user");
+  if (!last) return Response.json({ ok: false }, { status: 400 });
+
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
+  const enc = new TextEncoder();
+  const configured = !!(process.env.LLM_BASE_URL && process.env.LLM_API_KEY && process.env.LLM_MODEL);
+
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const send = (o: unknown) => controller.enqueue(enc.encode(JSON.stringify(o) + "\n"));
+      const offline = () => send({ t: "kb", ...fallbackAnswer(last.content) });
+      let said = false;
+      try {
+        if (!configured || limited(ip)) { offline(); return; }
+        const page = typeof body.page === "string" ? body.page.slice(0, 120) : "";
+        const messages: ChatMsg[] = [
+          { role: "system", content: instructions(lang, "text") + (page ? `\n\n# Right now\nThe visitor is looking at the page "${page}".` : "") },
+          ...history,
+        ];
+        const tools = toolDefs(lang);
+        for (let i = 0; i < 4; i++) {
+          const { content, calls } = await round(messages, tools, (v) => { said = true; send({ t: "delta", v }); }, request.signal);
+          if (!calls.length) break;
+          messages.push({ role: "assistant", content: content || null, tool_calls: calls });
+          for (const call of calls) {
+            let args: Record<string, unknown> = {};
+            try { args = JSON.parse(call.function.arguments || "{}"); } catch { /* malformed arguments are ignored */ }
+            const action = { name: call.function.name, args } as AssistantAction;
+            if (action.name === "show_page" && typeof args.path === "string") args.path = args.path.replace(/^\/+|\/+$/g, "").replace(/^(ru|en|de)(\/|$)/, "");
+            const label = action.name === "show_page" ? siteMap(lang).find((p) => p.path === action.args.path)?.title : undefined;
+            const known = ["show_page", "scroll_page", "open_request_form", "handoff_to_manager"].includes(action.name) && (action.name !== "show_page" || label !== undefined);
+            if (known) send({ t: "action", name: action.name, args, label });
+            messages.push({ role: "tool", tool_call_id: call.id, content: known ? toolResult(lang, action) : action.name === "show_page" ? "No such page. Use a path from the site map." : "Unknown tool." });
+          }
+          if (content) send({ t: "delta", v: "\n" });
+        }
+        if (!said) offline();
+      } catch (e) {
+        console.error("[chat]", e instanceof Error ? e.message : e);
+        if (!said) offline();
+      } finally {
+        send({ t: "done" });
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, { headers: { "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-store" } });
 }

@@ -1,6 +1,7 @@
 "use client";
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { LoopVideo } from "./LoopVideo";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -26,8 +27,8 @@ export function HeroScene({ image, figure, video }: { image: string; figure?: st
         transition={{ duration: 1.8, ease }}
       >
         <motion.div className="absolute inset-0" style={reduce ? undefined : { y: bgY, scale: bgScale }}>
-          {video && !reduce ? (
-            <video src={video} poster={image} autoPlay muted loop playsInline preload="metadata" className="size-full object-cover object-[72%_center] opacity-55 lg:opacity-100" />
+          {video ? (
+            <LoopVideo src={video} poster={image} className="size-full object-cover object-[72%_center] opacity-55 lg:opacity-100" />
           ) : (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={image} alt="" fetchPriority="high" className="size-full object-cover object-[72%_center] opacity-55 lg:opacity-100" />

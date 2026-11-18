@@ -9,6 +9,7 @@ import { CtaBand, DraftBand, LinkCard, Partners, SectionTitle, Steps } from "@/c
 import { CaseCard } from "@/components/Projects";
 import { Icon } from "@/components/Icon";
 import { HeroScene } from "@/components/HeroScene";
+import { ProfileShot } from "@/components/ProfileShot";
 
 export const metadata: Metadata = { alternates: alternates() };
 
@@ -21,7 +22,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   return (
     <>
       <section className="night relative isolate overflow-hidden text-white">
-        <HeroScene image={p.hero.img} figure={p.hero.figure} />
+        <HeroScene image={p.hero.img} figure={p.hero.figure} video="/video/hero-night-house.mp4" />
         <div className="container-x pb-28 pt-14 sm:pb-36 sm:pt-20 lg:pt-24">
           <Reveal y={12}>
             <span className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-sm backdrop-blur">
@@ -57,7 +58,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         </Stagger>
       </section>
 
-      <section className="container-x py-16 sm:py-24">
+      <section id="systems" className="scroll-mt-24 container-x py-16 sm:py-24">
         <SectionTitle title={p.systems.title} lead={p.systems.lead} aside={<ButtonLink href={href(lang, "okna#compare")} variant="outline">{ui.compare}</ButtonLink>} />
         <Stagger className="mt-10 grid gap-5 md:grid-cols-3">
           {c.systems.map((s) => (
@@ -65,8 +66,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               <Link href={href(lang, `okna/${s.slug}`)} className="group flex h-full flex-col rounded-3xl border border-line bg-white p-3 transition-[transform,box-shadow,border-color] duration-500 ease-out-soft hover:-translate-y-2 hover:border-cyan/50 hover:shadow-lift">
                 <span className="relative block aspect-[5/4] overflow-hidden rounded-2xl bg-[#eef3f7]">
                   <span className={`absolute left-3 top-3 z-10 rounded-full px-3.5 py-1.5 text-[13px] font-medium ${tone[s.badge.tone]}`}>{s.badge.text}</span>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={s.img} alt={s.name} loading="lazy" className="absolute inset-0 size-full object-cover object-[50%_42%] transition-transform duration-700 ease-out-soft group-hover:scale-[1.07]" />
+                  <ProfileShot src={s.cutout} alt={s.name} />
                 </span>
                 <span className="flex flex-1 flex-col px-3 pb-3 pt-5">
                   <span className="text-[26px] font-bold leading-none tracking-tight">{s.name}</span>
@@ -82,7 +82,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         </Stagger>
       </section>
 
-      <section className="bg-white">
+      <section id="why" className="scroll-mt-24 bg-white">
         <div className="container-x py-16 sm:py-24">
           <SectionTitle title={p.why.title} lead={p.why.lead} />
           <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -97,7 +97,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         </div>
       </section>
 
-      <section className="container-x py-16 sm:py-24">
+      <section id="solutions" className="scroll-mt-24 container-x py-16 sm:py-24">
         <SectionTitle title={p.solutions.title} lead={p.solutions.lead} aside={<ButtonLink href={href(lang, "resheniya")} variant="outline">{ui.nav.solutions}</ButtonLink>} />
         <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {c.solutions.slice(0, 6).map((s) => (
@@ -109,7 +109,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <DraftBand data={c.pages.draft} />
       <Steps data={c.pages.steps} />
 
-      <section className="bg-white">
+      <section id="projects" className="scroll-mt-24 bg-white">
         <div className="container-x py-16 sm:py-24">
           <SectionTitle title={p.projects.title} lead={p.projects.lead} aside={<ButtonLink href={href(lang, "proekty")} variant="outline">{ui.cta.allProjects}</ButtonLink>} />
           <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -118,7 +118,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         </div>
       </section>
 
-      <section className="container-x py-16 sm:py-24">
+      <section id="news" className="scroll-mt-24 container-x py-16 sm:py-24">
         <SectionTitle title={p.news.title} aside={<ButtonLink href={href(lang, "novosti")} variant="outline">{ui.nav.news}</ButtonLink>} />
         <Stagger className="mt-10 grid gap-5 md:grid-cols-2">
           {c.news.slice(0, 2).map((n) => (
