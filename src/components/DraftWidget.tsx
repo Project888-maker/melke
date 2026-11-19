@@ -20,6 +20,7 @@ type Msg = {
 
 let seq = 0;
 const uid = () => `m${Date.now().toString(36)}${(seq++).toString(36)}`;
+const CALL_LANGS: [Locale, string][] = [["ru", "Русский"], ["en", "English"], ["de", "Deutsch"]];
 const isPhone = () => typeof window !== "undefined" && window.matchMedia("(max-width: 639px)").matches;
 
 function Avatar({ src, className }: { src: string; className?: string }) {
@@ -330,6 +331,17 @@ export function DraftWidget({ lang, ui, quiz, avatar, greeting }: { lang: Locale
                   <button type="button" onClick={() => void voice.stop()} aria-label={d.end} className="grid size-11 shrink-0 place-items-center rounded-full bg-rose-500 transition hover:bg-rose-600">
                     <Icon name="hangup" className="size-[18px]" />
                   </button>
+                </div>
+                <div className="mt-2.5 flex items-center gap-2 px-1" data-draft="call-lang" role="group" aria-label={d.callLang}>
+                  <span className="mr-auto text-[12px] text-muted">{d.callLang}</span>
+                  {CALL_LANGS.map(([code, label]) => (
+                    <button
+                      key={code} type="button" onClick={() => voice.setLanguage(code)} aria-pressed={voice.speech === code}
+                      className={cx("h-8 rounded-full px-3 text-[13px] font-medium transition", voice.speech === code ? "bg-navy text-white" : "bg-mist text-ink hover:bg-cyan/20")}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
               </div>
             ) : (

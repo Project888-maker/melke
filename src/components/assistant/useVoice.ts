@@ -24,6 +24,8 @@ export function useVoice({
   const [error, setError] = useState<VoiceError>(null);
   const [muted, setMuted] = useState(false);
   const [level, setLevel] = useState(0);
+  /** Language of the conversation: starts as the site language, follows Draft, can be set by the visitor. */
+  const [speech, setSpeech] = useState<Locale>(lang);
   const room = useRef<Room | null>(null);
   const audio = useRef<HTMLAudioElement[]>([]);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -63,6 +65,7 @@ export function useVoice({
   const start = useCallback(async () => {
     if (room.current) return;
     heard.current = false;
+    setSpeech(lang);
     setError(null);
     setState("connecting");
     try {
@@ -99,6 +102,8 @@ export function useVoice({
         } catch { /* stream cut short: keep what arrived */ }
         const final = mine ? attrs["lk.transcription_final"] !== "false" : true;
         if (text.trim()) cb.current.onTranscript({ id, from: mine ? "me" : "draft", text, final });
+        // Draft switched to Russian by himself (the visitor spoke Russian on another language's page).
+        if (!mine && (text.match(/[а-яё]/gi) ?? []).length >= 6) setSpeech("ru");
       });
 
       r.on(RoomEvent.TrackSubscribed, (track) => {
@@ -156,6 +161,12 @@ export function useVoice({
     setMuted(next);
   }, [muted]);
 
+  /** The visitor picks the language of the call: recognition and voice lock to it. */
+  const setLanguage = useCallback((l: Locale) => {
+    setSpeech(l);
+    void room.current?.localParticipant.setAttributes({ lang: l }).catch(() => {});
+  }, []);
+
   /** Lets the agent know when the visitor moves to another page on their own. */
   const reportPage = useCallback((path: string) => {
     void room.current?.localParticipant.setAttributes({ page: path }).catch(() => {});
@@ -163,5 +174,5 @@ export function useVoice({
 
   useEffect(() => () => { void stop(); }, [stop]);
 
-  return { enabled, state, error, muted, level, active: state !== "idle" && state !== "error", start, stop, toggleMute, reportPage };
+  return { enabled, state, error, muted, level, speech, setLanguage, active: state !== "idle" && state !== "error", start, stop, toggleMute, reportPage };
 }
