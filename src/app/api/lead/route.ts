@@ -1,4 +1,15 @@
 import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+
+/**
+ * Delivery channels, each switched on by its environment variables:
+ *   Telegram: TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID (several ids separated by commas).
+ *             The chat id is shown at /api/lead/telegram after the recipient presses Start in the bot.
+ *   Email:    SMTP_HOST + SMTP_USER + SMTP_PASS (SMTP_PORT, default 465), or RESEND_API_KEY + LEAD_EMAIL_FROM.
+ *             LEAD_EMAIL_TO (default eurotexno@mail.ru, several separated by commas), LEAD_EMAIL_FROM (default SMTP_USER).
+ *   Webhook:  LEAD_WEBHOOK_URL.
+ */
+export const runtime = "nodejs";
 
 type Lead = {
   kind?: string; topic?: string; name?: string; phone?: string; message?: string;
@@ -43,26 +54,39 @@ export async function POST(request: Request) {
   const sent: string[] = [];
   const failed: string[] = [];
 
-  const { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, RESEND_API_KEY, LEAD_EMAIL_TO, LEAD_EMAIL_FROM, LEAD_WEBHOOK_URL } = process.env;
+  const { TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, RESEND_API_KEY, LEAD_EMAIL_TO, LEAD_EMAIL_FROM, LEAD_WEBHOOK_URL, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
+  const list = (v?: string) => (v ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+  const emailTo = list(LEAD_EMAIL_TO).length ? list(LEAD_EMAIL_TO) : ["eurotexno@mail.ru"];
 
-  if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-    try {
-      const r = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: `${subject}\n\n${text}` }),
-      });
-      (r.ok ? sent : failed).push("telegram");
-    } catch {
-      failed.push("telegram");
-    }
+  if (TELEGRAM_BOT_TOKEN && list(TELEGRAM_CHAT_ID).length) {
+    // One message per recipient; the channel counts as working if at least one got it.
+    const results = await Promise.all(
+      list(TELEGRAM_CHAT_ID).map((chat_id) =>
+        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ chat_id, text: `${subject}\n\n${text}` }),
+        }).then((r) => r.ok, () => false),
+      ),
+    );
+    (results.some(Boolean) ? sent : failed).push("telegram");
   }
-  if (RESEND_API_KEY && LEAD_EMAIL_FROM) {
+  if (SMTP_HOST && SMTP_USER && SMTP_PASS) {
+    try {
+      const port = Number(SMTP_PORT) || 465;
+      const mail = nodemailer.createTransport({ host: SMTP_HOST, port, secure: port === 465, auth: { user: SMTP_USER, pass: SMTP_PASS }, connectionTimeout: 8000, socketTimeout: 8000 });
+      await mail.sendMail({ from: LEAD_EMAIL_FROM || `"Сайт ET" <${SMTP_USER}>`, to: emailTo, subject, text });
+      sent.push("email");
+    } catch (e) {
+      console.error("[lead] smtp failed", e instanceof Error ? e.message : e);
+      failed.push("email");
+    }
+  } else if (RESEND_API_KEY && LEAD_EMAIL_FROM) {
     try {
       const r = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${RESEND_API_KEY}` },
-        body: JSON.stringify({ from: LEAD_EMAIL_FROM, to: [LEAD_EMAIL_TO ?? "eurotexno@mail.ru"], subject, text }),
+        body: JSON.stringify({ from: LEAD_EMAIL_FROM, to: emailTo, subject, text }),
       });
       (r.ok ? sent : failed).push("email");
     } catch {
@@ -83,8 +107,8 @@ export async function POST(request: Request) {
   }
 
   const configured = sent.length + failed.length > 0;
+  if (failed.length) console.error("[lead] delivery failed", failed, "delivered", sent);
   if (configured && sent.length === 0) {
-    console.error("[lead] delivery failed", failed);
     return NextResponse.json({ ok: false, error: "delivery" }, { status: 502 });
   }
   if (!configured) {
